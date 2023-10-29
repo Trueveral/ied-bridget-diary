@@ -13,7 +13,7 @@ export const CameraRig = () => {
     easing.damp3(
       camera.position,
       [
-        activeId < 0 ? 0 + (state.pointer.x * state.viewport.width) / 10 : 0,
+        activeId < 0 ? 0 + (state.pointer.x * state.viewport.width) / 8 : 0,
         activeId < 0 ? (0 + state.pointer.y) / 5 : 0,
         -15,
       ],
@@ -30,7 +30,7 @@ export const CameraRig = () => {
         rotation={[3.14, 0, 0]}
         position={[0, 0, -15]}
         zoom={20}
-        near={-100}
+        near={-20}
         far={1000}
       />
     </>
