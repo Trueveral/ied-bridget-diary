@@ -13,7 +13,7 @@ export const PostPro = () => {
   const { hoverId, activeId } = useSnapshot(interactionState);
   const AnimatedBrightnessContrast = animated(BrightnessContrast);
   const { brightness } = useSpring({
-    brightness: hoverId == -1 || activeId == -1 ? 0 : -0.1,
+    brightness: activeId == -1 ? 0 : -0.1,
     config: {
       easing: easings.easeInOutSine,
     },
