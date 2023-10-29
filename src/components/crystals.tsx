@@ -4,8 +4,9 @@ import * as THREE from "three";
 import { AnimatedComponent, animated, useSpring } from "@react-spring/three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { easing } from "maath";
-import { Float, MeshTransmissionMaterial, Text } from "@react-three/drei";
+import { Float, Icosahedron, MeshTransmissionMaterial, Text } from "@react-three/drei";
 import { countSate, interactionState } from "./visual";
+import React from "react";
 
 const AnimatedText = animated(Text);
 
@@ -26,7 +27,7 @@ const Crystal = ({
   const matRef = useRef<THREE.MeshPhysicalMaterial>();
   const titleMatRef = useRef<THREE.MeshBasicMaterial>();
   const contentMatRef = useRef<THREE.MeshBasicMaterial>();
-  // const envMap = new THREE.TextureLoader().load("!/textureMap.jpg");
+  const envMap = new THREE.TextureLoader().load("/images/background.1.webp");
   // get width and height of the viewport
   const { viewport } = useThree();
 
@@ -54,7 +55,7 @@ const Crystal = ({
     titlePosition: [
       thisActive ? viewport.width / 3.5 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive || thisHovered ? -20 : -15,
+      thisActive || thisHovered ? -22 : -15,
     ],
     config: {
       mass: 1,
@@ -68,7 +69,7 @@ const Crystal = ({
     contentPosition: [
       thisActive ? viewport.width / 3.5 - 30 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive ? -20 : -15,
+      thisActive ? -21 : -15,
     ],
     config: {
       mass: 1,
@@ -140,28 +141,26 @@ const Crystal = ({
             // @ts-ignore
             interactionState.activeRef = meshRef.current;
           }}
-          // castShadow
-          // receiveShadow
           // @ts-ignore
           ref={meshRef}
-          // position={crystalPosition}
+          geometry={new THREE.IcosahedronGeometry()}
           {...args}
           // @ts-ignore
           position={crystalPosition}
+          // rotation={[0, -Math.PI/2, 0]}
         >
-          <icosahedronGeometry />
+          {/* <Icosahedron /> */}
           <MeshTransmissionMaterial
-            ior={0}
-            resolution={2048}
+            ior={1.5}
+            resolution={1024}
             roughness={0.1}
             distortion={0.5}
-            thickness={1}
+            thickness={0.2}
             anisotropy={1}
             // @ts-ignore
             ref={matRef}
-            // envMap={envMap}
-            samples={10}
-            color="#ffffff"
+            transparent
+            color={"#ffffff"}
           />
         </animated.mesh>
         <pointLight
@@ -169,7 +168,7 @@ const Crystal = ({
           // @ts-ignore
           ref={lightRef}
           distance={1000}
-          intensity={100}
+          intensity={0}
           color="#ffffff"
         />
       </Float>
@@ -184,6 +183,7 @@ const Crystal = ({
           fontSize={2}
           color="#ffffff"
           rotation={[0, 3.14, 0]}
+          font={"/fonts/serif.ttf"}
         >
           {title}
           {/* <meshBasicMaterial ref={titleMatRef} transparent opacity={1} /> */}
@@ -199,6 +199,7 @@ const Crystal = ({
         fontSize={1}
         color="#ffffff"
         rotation={[0, 3.14, 0]}
+        font={"/fonts/mono.ttf"}
       >
         {content}
         {/* <meshBasicMaterial ref={contentMatRef} transparent opacity={0} /> */}

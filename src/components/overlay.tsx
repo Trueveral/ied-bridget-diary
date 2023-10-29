@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function Overlay() {
   return (
     <div className="absolute w-scren h-screen left-0 top-0">
