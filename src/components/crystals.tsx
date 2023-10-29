@@ -137,7 +137,7 @@ const Crystal = ({
           }}
           onClick={() => {
             interactionState.activeId = id;
-            interactionState.activeRef = meshRef.current;
+            // interactionState.activeRef = meshRef.current;
           }}
           // castShadow
           // receiveShadow
