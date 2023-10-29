@@ -26,7 +26,7 @@ const Crystal = ({
   const matRef = useRef<THREE.MeshPhysicalMaterial>();
   const titleMatRef = useRef<THREE.MeshBasicMaterial>();
   const contentMatRef = useRef<THREE.MeshBasicMaterial>();
-  const envMap = new THREE.TextureLoader().load("!/textureMap.jpg");
+  // const envMap = new THREE.TextureLoader().load("!/textureMap.jpg");
   // get width and height of the viewport
   const { viewport } = useThree();
 
@@ -50,7 +50,7 @@ const Crystal = ({
   });
 
   const { fillOpacity: titleFillOpacity, titlePosition } = useSpring({
-    fillOpacity: thisHovered || thisActive ? 1 : 0,
+    fillOpacity: thisHovered || thisActive ? 1 : 0.01,
     titlePosition: [
       thisActive ? viewport.width / 3.5 : args.position[0],
       thisActive ? 3 : args.position[1],
@@ -64,7 +64,7 @@ const Crystal = ({
   });
 
   const { contentFillOpacity, contentPosition } = useSpring({
-    contentFillOpacity: thisActive ? 1 : 0,
+    contentFillOpacity: thisActive ? 1 :  0.01,
     contentPosition: [
       thisActive ? viewport.width / 3.5 - 30 : args.position[0],
       thisActive ? 3 : args.position[1],
@@ -159,7 +159,7 @@ const Crystal = ({
             anisotropy={1}
             // @ts-ignore
             ref={matRef}
-            envMap={envMap}
+            // envMap={envMap}
             samples={10}
             color="#ffffff"
           />

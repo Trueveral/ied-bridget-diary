@@ -10,6 +10,7 @@ import { useSpring, animated, easings } from "@react-spring/three";
 import { CrystalArray } from "./crystals";
 import { CameraRig } from "./camera";
 import { PostPro } from "./postpro";
+import { MeshBasicMaterial, MeshLambertMaterial, SpotLight } from "three/src/Three.js";
 
 export const countSate = proxy({
   value: 10,
@@ -34,6 +35,7 @@ export default function Visual() {
         <CrystalArray />
         <Particles count={3000} />
       </group>
+      
       <group>
         <CameraRig />
         <PostPro />
@@ -54,11 +56,11 @@ const SceneManager = () => {
     const handleClick = () => {
       if (!activeRef) return;
       const mouse = new THREE.Vector2(pointer.x, pointer.y);
-      raycaster.setFromCamera(mouse, camera); // 替换成你的相机的引用
-      // 检查交互
+      raycaster.setFromCamera(mouse, camera); 
+
       if (activeRef) {
         // @ts-ignore
-        const intersects = raycaster.intersectObject(activeRef); // 替换成你的 mesh 的引用
+        const intersects = raycaster.intersectObject(activeRef); 
         if (intersects.length == 0) {
           interactionState.activeId = -1;
           interactionState.activeRef = null;
@@ -76,10 +78,13 @@ const SceneManager = () => {
 
 const ForegroundPlane = () => {
   return (
-    <mesh>
-    <Plane args={[1000, 1000]} position={[0, -Math.PI, 0]} rotation={[0, -Math.PI, 0]} />
-    <meshLambertMaterial color="white" opacity={0.5} />
-    </mesh>
+    <mesh position={[0, 0, 10]}>
+        <Plane args={[1000, 1000]} rotation={[0, -Math.PI, 0]} material={new THREE.MeshLambertMaterial({
+          color: "#a0a0a0",
+          transparent: true,
+          opacity: 0.1,
+        })} />
+      </mesh>
   )
 }
 
