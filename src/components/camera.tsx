@@ -4,6 +4,8 @@ import { interactionState } from "./visual";
 import { easing } from "maath";
 import { OrthographicCamera } from "@react-three/drei";
 
+// ref: this code refers to: https://codesandbox.io/s/bst0cy
+
 export const CameraRig = () => {
   const { camera } = useThree();
   const { activeId } = useSnapshot(interactionState);
