@@ -14,7 +14,7 @@
     "@react-three/drei": "^9.88.7",
     "@react-three/fiber": "^8.15.7",
     "@react-three/postprocessing": "^2.15.8",
-    "@types/three": "^0.157.2",
+    "@types/three": "^0.158.0",
     "maath": "^0.10.4",
     "next": "13.5.6",
     "postprocessing": "^6.33.2",

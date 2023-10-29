@@ -217,7 +217,7 @@ export const CrystalArray = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:5500/public/content.json"
+          "./content.json"
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");

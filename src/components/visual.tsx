@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useThree } from "@react-three/fiber";
-import { BakeShadows, Environment } from "@react-three/drei";
+import { BakeShadows, Plane } from "@react-three/drei";
 import * as THREE from "three";
 import { useEffect } from "react";
 import { useSnapshot, proxy } from "valtio";
@@ -28,8 +28,7 @@ export const interactionState = proxy<{
 export default function Visual() {
   return (
     <Canvas className=" bg-black" shadows dpr={[1, 1.5]} eventPrefix="client">
-      {/* <color attach={"background"} args={"#000000"} /> */}
-      {/* <ambientLight intensity={100} /> */}
+      <ForegroundPlane />
       <group>
         <RingLight />
         <CrystalArray />
@@ -39,7 +38,6 @@ export default function Visual() {
         <CameraRig />
         <PostPro />
         <BakeShadows />
-        {/* <Environment preset="sunset" /> */}
       </group>
       <SceneManager />
     </Canvas>
@@ -75,6 +73,15 @@ const SceneManager = () => {
 
   return <></>;
 };
+
+const ForegroundPlane = () => {
+  return (
+    <mesh>
+    <Plane args={[1000, 1000]} position={[0, -Math.PI, 0]} rotation={[0, -Math.PI, 0]} />
+    <meshLambertMaterial color="white" opacity={0.5} />
+    </mesh>
+  )
+}
 
 const RingLight = () => {
   const { activeId } = useSnapshot(interactionState);
