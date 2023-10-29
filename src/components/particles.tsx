@@ -5,6 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { useSnapshot } from "valtio";
 import { interactionState } from "./visual";
 import { easing } from "maath";
+import React from "react";
 
 // ref: this code is largely based on: https://codesandbox.io/s/qpfgyp
 
@@ -53,13 +54,15 @@ export const Particles = ({ count }: { count: number }) => {
       dummy.updateMatrix();
       mesh.current!!.setMatrixAt(i, dummy.matrix);
     });
+    
 
-    easing.dampC(
-      (mesh.current!!.material as THREE.MeshStandardMaterial).color,
-      activeId == -1 ? "white" : "black",
+    easing.damp(
+      mesh.current!!.material as THREE.MeshStandardMaterial,
+      "opacity",
+      activeId == -1 ? 0.5 : 0,
       0.5,
       state.clock.getDelta()
-    );
+    )
 
     easing.dampE(
       mesh.current!!.rotation,
@@ -83,8 +86,7 @@ export const Particles = ({ count }: { count: number }) => {
         material={
           new THREE.MeshStandardMaterial({
             color: "#a0a0a0",
-            roughness: 0.5,
-            metalness: 0.5,
+            metalness: 0.3,
             transparent: true,
             opacity: 0.5,
           })

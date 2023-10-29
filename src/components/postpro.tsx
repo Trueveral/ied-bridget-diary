@@ -8,12 +8,15 @@ import {
   EffectComposer,
   SMAA,
 } from "@react-three/postprocessing";
+import React from "react";
 
 export const PostPro = () => {
   const { hoverId, activeId } = useSnapshot(interactionState);
   const AnimatedBrightnessContrast = animated(BrightnessContrast);
-  const { brightness } = useSpring({
+  const AnimatedBloom = animated(Bloom);
+  const { brightness, intensity: bloomIntensity } = useSpring({
     brightness: activeId == -1 ? 0 : -0.1,
+    intensity: activeId == -1 ? 1.6 : 0.3,
     config: {
       easing: easings.easeInOutSine,
     },
@@ -21,11 +24,11 @@ export const PostPro = () => {
 
   return (
     <EffectComposer disableNormalPass>
-      <Bloom
+      <AnimatedBloom
         luminanceThreshold={0.3}
         mipmapBlur
         luminanceSmoothing={0.0}
-        intensity={1.6}
+        intensity={bloomIntensity}
       />
       <DepthOfField
         target={[0, 0, 13]}
@@ -34,7 +37,7 @@ export const PostPro = () => {
         height={0}
       />
       <SMAA />
-      <AnimatedBrightnessContrast brightness={brightness} contrast={0} />
+      {/* <AnimatedBrightnessContrast brightness={brightness} contrast={0} /> */}
     </EffectComposer>
   );
 };
