@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useThree } from "@react-three/fiber";
-import { BakeShadows } from "@react-three/drei";
+import { BakeShadows, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { useEffect } from "react";
 import { useSnapshot, proxy } from "valtio";
@@ -27,7 +27,8 @@ export const interactionState = proxy<{
 
 export default function Visual() {
   return (
-    <Canvas shadows dpr={[1, 1.5]} eventPrefix="client">
+    <Canvas className=" bg-black" shadows dpr={[1, 1.5]} eventPrefix="client">
+      {/* <color attach={"background"} args={"#000000"} /> */}
       {/* <ambientLight intensity={100} /> */}
       <group>
         <RingLight />
