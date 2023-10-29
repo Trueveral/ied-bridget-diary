@@ -27,12 +27,12 @@ export const PostPro = () => {
         luminanceSmoothing={0.0}
         intensity={1.6}
       />
-      {/* <DepthOfField
+      <DepthOfField
         target={[0, 0, 13]}
         focalLength={0.3}
         bokehScale={20}
         height={0}
-      /> */}
+      />
       <SMAA />
       <AnimatedBrightnessContrast brightness={brightness} contrast={0} />
     </EffectComposer>

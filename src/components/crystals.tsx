@@ -24,6 +24,8 @@ const Crystal = ({
   const meshRef = useRef<THREE.Mesh>();
   const lightRef = useRef<THREE.PointLight>();
   const matRef = useRef<THREE.MeshPhysicalMaterial>();
+  const titleMatRef = useRef<THREE.MeshBasicMaterial>();
+  const contentMatRef = useRef<THREE.MeshBasicMaterial>();
   const envMap = new THREE.TextureLoader().load("!/textureMap.jpg");
   // get width and height of the viewport
   const { viewport } = useThree();
@@ -32,6 +34,48 @@ const Crystal = ({
   const thisActive = activeId == id;
   const hasActive = activeId != -1;
   const hasHovered = hoverId != -1;
+
+  const { crystalPosition } = useSpring({
+    crystalPosition: [
+      thisActive ? viewport.width / 3.5 : args.position[0],
+      thisActive ? 3 : args.position[1],
+      -10,
+    ],
+    config: {
+      mass: 1,
+      tension: 100,
+      friction: 20,
+      duration: 300,
+    },
+  });
+
+  const { fillOpacity: titleFillOpacity, titlePosition } = useSpring({
+    fillOpacity: thisHovered || thisActive ? 1 : 0,
+    titlePosition: [
+      thisActive ? viewport.width / 3.5 : args.position[0],
+      thisActive ? 3 : args.position[1],
+      thisActive || thisHovered ? -20 : -15,
+    ],
+    config: {
+      mass: 1,
+      tension: 100,
+      friction: 20,
+    },
+  });
+
+  const { contentFillOpacity, contentPosition } = useSpring({
+    contentFillOpacity: thisActive ? 1 : 0,
+    contentPosition: [
+      thisActive ? viewport.width / 3.5 - 30 : args.position[0],
+      thisActive ? 3 : args.position[1],
+      thisActive ? -20 : -15,
+    ],
+    config: {
+      mass: 1,
+      tension: 100,
+      friction: 20,
+    },
+  });
 
   useFrame((state, delta) => {
     if (hasActive) {
@@ -81,48 +125,6 @@ const Crystal = ({
     );
   });
 
-  const { crystalPosition } = useSpring({
-    crystalPosition: [
-      thisActive ? viewport.width / 3.5 : args.position[0],
-      thisActive ? 3 : args.position[1],
-      -10,
-    ],
-    config: {
-      mass: 1,
-      tension: 100,
-      friction: 20,
-      duration: 300,
-    },
-  });
-
-  const { fillOpacity: titleFillOpacity, titlePosition } = useSpring({
-    fillOpacity: thisHovered || thisActive ? 1 : 0,
-    titlePosition: [
-      thisActive ? viewport.width / 3.5 : args.position[0],
-      thisActive ? 3 : args.position[1],
-      -22,
-    ],
-    config: {
-      mass: 1,
-      tension: 100,
-      friction: 20,
-    },
-  });
-
-  const { contentFillOpacity, contentPosition } = useSpring({
-    contentFillOpacity: thisActive ? 1 : 0,
-    contentPosition: [
-      thisActive ? viewport.width / 3.5 - 30 : args.position[0],
-      thisActive ? 3 : args.position[1],
-      -22,
-    ],
-    config: {
-      mass: 1,
-      tension: 100,
-      friction: 20,
-    },
-  });
-
   return (
     <>
       <Float speed={3} rotationIntensity={1} floatIntensity={1}>
@@ -166,7 +168,7 @@ const Crystal = ({
           color="#ffffff"
         />
       </Float>
-      <>
+      <mesh>
         <AnimatedText
           fillOpacity={titleFillOpacity}
           position={titlePosition}
@@ -174,24 +176,26 @@ const Crystal = ({
           strokeOpacity={0}
           maxWidth={10}
           fontSize={2}
-          color="white"
+          color="#ffffff"
           rotation={[0, 3.14, 0]}
         >
           {title}
+          {/* <meshBasicMaterial ref={titleMatRef} transparent opacity={1} /> */}
         </AnimatedText>
-        <AnimatedText
-          fillOpacity={contentFillOpacity}
-          position={contentPosition}
-          whiteSpace={"overflowWrap"}
-          strokeOpacity={0}
-          maxWidth={20}
-          fontSize={1}
-          color="white"
-          rotation={[0, 3.14, 0]}
-        >
-          {content}
-        </AnimatedText>
-      </>
+      </mesh>
+      <AnimatedText
+        fillOpacity={contentFillOpacity}
+        position={contentPosition}
+        whiteSpace={"overflowWrap"}
+        strokeOpacity={0}
+        maxWidth={20}
+        fontSize={1}
+        color="#ffffff"
+        rotation={[0, 3.14, 0]}
+      >
+        {content}
+        {/* <meshBasicMaterial ref={contentMatRef} transparent opacity={0} /> */}
+      </AnimatedText>
     </>
   );
 };
