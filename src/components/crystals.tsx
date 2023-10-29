@@ -50,7 +50,7 @@ const Crystal = ({
   });
 
   const { fillOpacity: titleFillOpacity, titlePosition } = useSpring({
-    fillOpacity: thisHovered || thisActive ? 1 : 0.01,
+    fillOpacity: thisHovered || thisActive ? 1 : 0,
     titlePosition: [
       thisActive ? viewport.width / 3.5 : args.position[0],
       thisActive ? 3 : args.position[1],
@@ -64,7 +64,7 @@ const Crystal = ({
   });
 
   const { contentFillOpacity, contentPosition } = useSpring({
-    contentFillOpacity: thisActive ? 1 :  0.01,
+    contentFillOpacity: thisActive ? 1 :  0,
     contentPosition: [
       thisActive ? viewport.width / 3.5 - 30 : args.position[0],
       thisActive ? 3 : args.position[1],
@@ -213,11 +213,10 @@ export const CrystalArray = () => {
   const [content, setContent] = useState<Record<string, "title"> | null>(null);
 
   useEffect(() => {
-    // 异步加载本地JSON数据
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "./content.json"
+          "/data/content.json"
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -230,12 +229,11 @@ export const CrystalArray = () => {
     };
 
     fetchData();
-  }, []); // 空数组作为依赖，确保只在组件挂载时执行一次
+  }, []); 
 
   const crystals = useMemo(() => {
     const temp = [];
     for (let i = 0; i < count; i++) {
-      // 让 position 呈现球形分布
       const offset = i - count / 2;
       const position = [offset * 6 + Math.random(), 6 * Math.sin(i), -10];
       const scale = [2, 2, 2];
