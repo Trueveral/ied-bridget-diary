@@ -59,6 +59,7 @@ const SceneManager = () => {
       raycaster.setFromCamera(mouse, camera); // 替换成你的相机的引用
       // 检查交互
       if (activeRef) {
+        // @ts-ignore
         const intersects = raycaster.intersectObject(activeRef); // 替换成你的 mesh 的引用
         if (intersects.length == 0) {
           interactionState.activeId = -1;

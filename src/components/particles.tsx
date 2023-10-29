@@ -79,6 +79,7 @@ export const Particles = ({ count }: { count: number }) => {
   return (
     <>
       <instancedMesh
+      // @ts-ignore
         ref={mesh}
         args={[undefined, undefined, count]}
         material={

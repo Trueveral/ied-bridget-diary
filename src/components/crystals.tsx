@@ -137,13 +137,16 @@ const Crystal = ({
           }}
           onClick={() => {
             interactionState.activeId = id;
-            // interactionState.activeRef = meshRef.current;
+            // @ts-ignore
+            interactionState.activeRef = meshRef.current;
           }}
           // castShadow
           // receiveShadow
+          // @ts-ignore
           ref={meshRef}
           // position={crystalPosition}
           {...args}
+          // @ts-ignore
           position={crystalPosition}
         >
           <icosahedronGeometry />
@@ -154,6 +157,7 @@ const Crystal = ({
             distortion={0.5}
             thickness={1}
             anisotropy={1}
+            // @ts-ignore
             ref={matRef}
             envMap={envMap}
             samples={10}
@@ -162,6 +166,7 @@ const Crystal = ({
         </animated.mesh>
         <pointLight
           position={[args.position[0], args.position[1], -40]}
+          // @ts-ignore
           ref={lightRef}
           distance={1000}
           intensity={100}
@@ -171,6 +176,7 @@ const Crystal = ({
       <mesh>
         <AnimatedText
           fillOpacity={titleFillOpacity}
+          // @ts-ignore
           position={titlePosition}
           whiteSpace={"overflowWrap"}
           strokeOpacity={0}
@@ -185,6 +191,7 @@ const Crystal = ({
       </mesh>
       <AnimatedText
         fillOpacity={contentFillOpacity}
+        // @ts-ignore
         position={contentPosition}
         whiteSpace={"overflowWrap"}
         strokeOpacity={0}
@@ -246,7 +253,9 @@ export const CrystalArray = () => {
             key={i}
             id={i}
             args={psr}
+            // @ts-ignore
             title={content ? content[i].title : "Loading..."}
+            // @ts-ignore
             content={content ? content[i].content : "Loading..."}
           />
         );
