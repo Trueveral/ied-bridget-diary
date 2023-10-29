@@ -157,7 +157,7 @@ const Crystal = ({
             distortion={0.5}
             thickness={0.2}
             anisotropy={1}
-            // // @ts-ignore
+            // @ts-ignore
             ref={matRef}
             transparent
             color={"#ffffff"}
