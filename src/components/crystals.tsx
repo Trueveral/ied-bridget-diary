@@ -55,7 +55,7 @@ const Crystal = ({
     titlePosition: [
       thisActive ? viewport.width / 3.5 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive || thisHovered ? -22 : -15,
+      thisActive || thisHovered ? -27 : -15,
     ],
     config: {
       mass: 1,
@@ -69,7 +69,7 @@ const Crystal = ({
     contentPosition: [
       thisActive ? viewport.width / 3.5 - 30 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive ? -21 : -15,
+      thisActive ? -26 : -15,
     ],
     config: {
       mass: 1,
@@ -147,9 +147,7 @@ const Crystal = ({
           {...args}
           // @ts-ignore
           position={crystalPosition}
-          // rotation={[0, -Math.PI/2, 0]}
         >
-          {/* <Icosahedron /> */}
           <MeshTransmissionMaterial
             ior={1.5}
             resolution={1024}

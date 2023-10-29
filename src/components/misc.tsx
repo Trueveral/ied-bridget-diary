@@ -61,7 +61,7 @@ export const ForegroundPlane = () => {
 
   return (
     <mesh>
-      <Plane args={[100, 80]} position={[0, 0, -5]} rotation={[0, -Math.PI, 0]} material={new THREE.MeshLambertMaterial({
+      <Plane args={[100, 80]} position={[0, 0, -25]} rotation={[0, -Math.PI, 0]} material={new THREE.MeshLambertMaterial({
         color: "#000000",
         transparent: true,
         opacity: 0,
@@ -72,7 +72,7 @@ export const ForegroundPlane = () => {
       <Image
         // @ts-ignore
         ref={imageRef}
-        url={activeId == -1 ? `images/background/1.webp` : `images/background/${9 - (activeId) + 1}.webp`} position={[0, 0, 0]} rotation={[0, -Math.PI, 0]} scale={[80, 45]}
+        url={activeId == -1 ? `images/background/black.webp` : `images/background/${9 - (activeId) + 1}.webp`} position={[0, 0, -24]} rotation={[0, -Math.PI, 0]} scale={[80, 45]}
         opacity={0} transparent
       />
     </mesh>

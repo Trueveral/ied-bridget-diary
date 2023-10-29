@@ -52,7 +52,7 @@ export default function Visual() {
   return (
     <Canvas className=" bg-black" shadows dpr={[1, 1.5]} eventPrefix="client">
       {/* <PrepareTextures /> */}
-      {/* <ForegroundPlane /> */}
+      <ForegroundPlane />
       <group>
         <RingLight />
         <CrystalArray />
