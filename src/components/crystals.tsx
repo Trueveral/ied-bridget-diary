@@ -40,7 +40,7 @@ const Crystal = ({
     crystalPosition: [
       thisActive ? viewport.width / 3.5 : args.position[0],
       thisActive ? 3 : args.position[1],
-      -10,
+      thisActive ? -17 : 0,
     ],
     config: {
       mass: 1,
@@ -55,7 +55,7 @@ const Crystal = ({
     titlePosition: [
       thisActive ? viewport.width / 3.5 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive ?  -30 : thisHovered ? -20 : -15,
+      thisActive ?  -30 : thisHovered ? -18 : -14,
     ],
     config: {
       mass: 1,
@@ -69,7 +69,7 @@ const Crystal = ({
     contentPosition: [
       thisActive ? viewport.width / 3.5 - 30 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive ?  -29 : thisHovered ? -19 : -14,
+      thisActive ?  -29 : thisHovered ? -17 : -13,
     ],
     config: {
       mass: 1,
@@ -111,13 +111,6 @@ const Crystal = ({
       delta
     );
     easing.damp(
-      meshRef.current!!.position,
-      "z",
-      thisHovered || thisActive ? -10 : 0,
-      0.5,
-      delta
-    );
-    easing.damp(
       lightRef.current!!,
       "intensity",
       thisActive ? 400 : 100,
@@ -149,17 +142,19 @@ const Crystal = ({
           position={crystalPosition}
         >
           <MeshTransmissionMaterial
-            ior={1.5}
-            resolution={1024}
+            ior={0.3}
+            resolution={2048}
             roughness={0.1}
             distortion={0.5}
-            thickness={0.2}
+            thickness={1}
             anisotropy={1}
             // @ts-ignore
             ref={matRef}
+            envMap={envMap}
+            samples={10}
+            color="#ffffff"
             transparent
-            opacity={0.7}
-            color="#a0a0a0"
+            opacity={0.8}
           />
         </animated.mesh>
       </Float>
