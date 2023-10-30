@@ -55,7 +55,7 @@ const Crystal = ({
     titlePosition: [
       thisActive ? viewport.width / 3.5 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive || thisHovered ? -27 : -15,
+      thisActive ?  -30 : thisHovered ? -20 : -15,
     ],
     config: {
       mass: 1,
@@ -69,7 +69,7 @@ const Crystal = ({
     contentPosition: [
       thisActive ? viewport.width / 3.5 - 30 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive ? -26 : -15,
+      thisActive ?  -29 : thisHovered ? -19 : -14,
     ],
     config: {
       mass: 1,
@@ -158,17 +158,10 @@ const Crystal = ({
             // @ts-ignore
             ref={matRef}
             transparent
-            color={"#ffffff"}
+            opacity={0.7}
+            color="#a0a0a0"
           />
         </animated.mesh>
-        <pointLight
-          position={[args.position[0], args.position[1], -40]}
-          // @ts-ignore
-          ref={lightRef}
-          distance={1000}
-          intensity={0}
-          color="#ffffff"
-        />
       </Float>
       <mesh>
         <AnimatedText
@@ -202,6 +195,15 @@ const Crystal = ({
         {content}
         {/* <meshBasicMaterial ref={contentMatRef} transparent opacity={0} /> */}
       </AnimatedText>
+      <mesh position={[args.position[0], args.position[1], -40]}>
+        <pointLight
+          // @ts-ignore
+          ref={lightRef}
+          distance={1000}
+          intensity={0}
+          color="#ffffff"
+        />
+        </mesh>
     </>
   );
 };

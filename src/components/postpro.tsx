@@ -16,7 +16,7 @@ export const PostPro = () => {
   const AnimatedBloom = animated(Bloom);
   const { brightness, intensity: bloomIntensity } = useSpring({
     brightness: activeId == -1 ? 0 : -0.1,
-    intensity: activeId == -1 ? 1.6 : 0.3,
+    intensity: activeId == -1 ? 1 : 0.3,
     config: {
       easing: easings.easeInOutSine,
     },

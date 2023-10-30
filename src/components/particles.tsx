@@ -17,8 +17,8 @@ export const Particles = ({ count }: { count: number }) => {
     const temp = [];
     for (let i = 0; i < count; i++) {
       const t = Math.random() * 100;
-      const factor = 20 + Math.random() * 100;
-      const speed = 0.01 + Math.random() / 200;
+      const factor = 7 + Math.random() * 70;
+      const speed = 0.01 + Math.random() / 250;
       const xFactor = -50 + Math.random() * 100;
       const yFactor = -50 + Math.random() * 100;
       const zFactor = -50 + Math.random() * 100;
@@ -84,15 +84,14 @@ export const Particles = ({ count }: { count: number }) => {
         ref={mesh}
         args={[undefined, undefined, count]}
         material={
-          new THREE.MeshStandardMaterial({
-            color: "#a0a0a0",
-            metalness: 0.3,
+          new THREE.MeshLambertMaterial({
+            color: "#ffffff",
             transparent: true,
-            opacity: 0.5,
+            opacity: 0.3,
           })
         }
       >
-        <sphereGeometry args={[0.3]} />
+        <icosahedronGeometry args={[0.15, 0]} />
       </instancedMesh>
     </>
   );

@@ -55,8 +55,8 @@ export const ForegroundPlane = () => {
   // interactionState.textures = textures;
 
   useFrame((state, delta) => {
-    easing.damp(imageRef.current!!.material as THREE.MeshBasicMaterial, "opacity", activeId == -1 ? 0 : 1, 0.4, delta);
-    easing.damp(coverRef.current!!.material as THREE.MeshLambertMaterial, "opacity", [8,7,6,4,2].includes(activeId) ? 0.7 : 0, 0.4, delta);
+    easing.damp(imageRef.current!!.material as THREE.MeshBasicMaterial, "opacity", activeId == -1 ? 0 : 1, 0.3, delta);
+    easing.damp(coverRef.current!!.material as THREE.MeshLambertMaterial, "opacity", [8,7,6,4,2].includes(activeId) ? 0.7 : 0, 0.3, delta);
   });
 
   return (
@@ -85,6 +85,7 @@ export const RingLight = () => {
     intensity: activeId == -1 ? 1000 : 0,
     config: {
       easing: easings.easeInOutSine,
+      duration: 200,
     },
   });
   return (
