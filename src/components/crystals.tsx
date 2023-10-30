@@ -27,7 +27,6 @@ const Crystal = ({
   const matRef = useRef<THREE.MeshPhysicalMaterial>();
   const titleMatRef = useRef<THREE.MeshBasicMaterial>();
   const contentMatRef = useRef<THREE.MeshBasicMaterial>();
-  const envMap = new THREE.TextureLoader().load("/images/background.1.webp");
   // get width and height of the viewport
   const { viewport } = useThree();
 
@@ -150,7 +149,6 @@ const Crystal = ({
             anisotropy={1}
             // @ts-ignore
             ref={matRef}
-            envMap={envMap}
             samples={10}
             color="#ffffff"
             transparent

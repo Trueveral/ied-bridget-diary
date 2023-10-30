@@ -40,17 +40,17 @@ export const SceneManager = () => {
 
 export const ForegroundPlane = () => {
   const loader = new THREE.TextureLoader().setPath('images/background/');
-  const textures = {} as { [key: string]: THREE.Texture };
+  // const textures = {} as { [key: string]: THREE.Texture };
   const { hoverId, activeId } = useSnapshot(interactionState);
   const imageRef = React.useRef<THREE.Mesh>();
   const coverRef = React.useRef<THREE.Mesh>();
-  Array(10).fill(0).map((_, i) => `${i + 1}.webp`).forEach((v, i) => {
-    const texture = loader.load(v);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.colorSpace = THREE.SRGBColorSpace;
-    textures[`${9 - i}`] = texture;
-  })
+  // Array(10).fill(0).map((_, i) => `${i + 1}.webp`).forEach((v, i) => {
+  //   const texture = loader.load(v);
+  //   texture.minFilter = THREE.LinearFilter;
+  //   texture.magFilter = THREE.LinearFilter;
+  //   texture.colorSpace = THREE.SRGBColorSpace;
+  //   textures[`${9 - i}`] = texture;
+  // })
 
   // interactionState.textures = textures;
 
