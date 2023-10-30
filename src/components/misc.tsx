@@ -40,17 +40,17 @@ export const SceneManager = () => {
 
 export const ForegroundPlane = () => {
   const loader = new THREE.TextureLoader().setPath('images/background/');
-  const textures = {} as { [key: string]: THREE.Texture };
+  // const textures = {} as { [key: string]: THREE.Texture };
   const { hoverId, activeId } = useSnapshot(interactionState);
   const imageRef = React.useRef<THREE.Mesh>();
   const coverRef = React.useRef<THREE.Mesh>();
-  Array(10).fill(0).map((_, i) => `${i + 1}.webp`).forEach((v, i) => {
-    const texture = loader.load(v);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.colorSpace = THREE.SRGBColorSpace;
-    textures[`${9 - i}`] = texture;
-  })
+  // Array(10).fill(0).map((_, i) => `${i + 1}.webp`).forEach((v, i) => {
+  //   const texture = loader.load(v);
+  //   texture.minFilter = THREE.LinearFilter;
+  //   texture.magFilter = THREE.LinearFilter;
+  //   texture.colorSpace = THREE.SRGBColorSpace;
+  //   textures[`${9 - i}`] = texture;
+  // })
 
   // interactionState.textures = textures;
 
@@ -61,7 +61,7 @@ export const ForegroundPlane = () => {
 
   return (
     <mesh>
-      <Plane args={[100, 80]} position={[0, 0, -25]} rotation={[0, -Math.PI, 0]} material={new THREE.MeshLambertMaterial({
+      <Plane args={[100, 80]} position={[0, 0, -15.5]} rotation={[0, -Math.PI, 0]} material={new THREE.MeshLambertMaterial({
         color: "#000000",
         transparent: true,
         opacity: 0,
@@ -72,7 +72,7 @@ export const ForegroundPlane = () => {
       <Image
         // @ts-ignore
         ref={imageRef}
-        url={activeId == -1 ? `images/background/black.webp` : `images/background/${9 - (activeId) + 1}.webp`} position={[0, 0, -24]} rotation={[0, -Math.PI, 0]} scale={[80, 45]}
+        url={activeId == -1 ? `images/background/black.webp` : `images/background/${9 - (activeId) + 1}.webp`} position={[0, 0, -15]} rotation={[0, -Math.PI, 0]} scale={[80, 45]}
         opacity={0} transparent
       />
     </mesh>
