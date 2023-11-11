@@ -1,10 +1,22 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import { useSnapshot } from "valtio";
 import * as THREE from "three";
-import { AnimatedComponent, animated, useSpring } from "@react-spring/three";
-import { useFrame, useThree } from "@react-three/fiber";
+import {
+  AnimatedProps,
+  SpringValue,
+  animated,
+  useSpring,
+  useSpringRef,
+  useTransition,
+} from "@react-spring/three";
+import { Euler, useFrame, useThree } from "@react-three/fiber";
 import { easing } from "maath";
-import { Float, Icosahedron, MeshTransmissionMaterial, Text } from "@react-three/drei";
+import {
+  Float,
+  Icosahedron,
+  MeshTransmissionMaterial,
+  Text,
+} from "@react-three/drei";
 import { countSate, interactionState } from "./visual";
 import React from "react";
 
@@ -13,13 +25,13 @@ const AnimatedText = animated(Text);
 const Crystal = ({
   args,
   id,
-  title,
-  content,
-}: {
+}: // title,
+// content,
+{
   args: Record<"position" | "rotation" | "scale", number[]>;
   id: number;
-  title: string;
-  content: string;
+  // title: string;
+  // content: string;
 }) => {
   const { hoverId, activeId } = useSnapshot(interactionState);
   const meshRef = useRef<THREE.Mesh>();
@@ -54,7 +66,7 @@ const Crystal = ({
     titlePosition: [
       thisActive ? viewport.width / 3.5 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive ?  -30 : thisHovered ? -18 : -14,
+      thisActive ? -30 : thisHovered ? -18 : -14,
     ],
     config: {
       mass: 1,
@@ -64,11 +76,11 @@ const Crystal = ({
   });
 
   const { contentFillOpacity, contentPosition } = useSpring({
-    contentFillOpacity: thisActive ? 1 :  0,
+    contentFillOpacity: thisActive ? 1 : 0,
     contentPosition: [
       thisActive ? viewport.width / 3.5 - 30 : args.position[0],
       thisActive ? 3 : args.position[1],
-      thisActive ?  -29 : thisHovered ? -17 : -13,
+      thisActive ? -29 : thisHovered ? -17 : -13,
     ],
     config: {
       mass: 1,
@@ -157,7 +169,7 @@ const Crystal = ({
         </animated.mesh>
       </Float>
       <mesh>
-        <AnimatedText
+        {/* <AnimatedText
           fillOpacity={titleFillOpacity}
           // @ts-ignore
           position={titlePosition}
@@ -170,10 +182,9 @@ const Crystal = ({
           font={"/fonts/serif.ttf"}
         >
           {title}
-          {/* <meshBasicMaterial ref={titleMatRef} transparent opacity={1} /> */}
-        </AnimatedText>
+        </AnimatedText> */}
       </mesh>
-      <AnimatedText
+      {/* <AnimatedText
         fillOpacity={contentFillOpacity}
         // @ts-ignore
         position={contentPosition}
@@ -186,8 +197,7 @@ const Crystal = ({
         font={"/fonts/mono.ttf"}
       >
         {content}
-        {/* <meshBasicMaterial ref={contentMatRef} transparent opacity={0} /> */}
-      </AnimatedText>
+      </AnimatedText> */}
       <mesh position={[args.position[0], args.position[1], -40]}>
         <pointLight
           // @ts-ignore
@@ -196,7 +206,69 @@ const Crystal = ({
           intensity={0}
           color="#ffffff"
         />
-        </mesh>
+      </mesh>
+    </>
+  );
+};
+
+type CrystalTextProps = AnimatedProps<{
+  fontSize: number;
+  color: string;
+  rotation: Euler;
+  font: string;
+}>;
+
+const CrystalText = ({
+  config,
+  contents,
+  positions,
+}: {
+  config: CrystalTextProps;
+  contents: string[];
+  positions: [number, number, number][];
+}) => {
+  const { value: count } = useSnapshot(countSate);
+  const { hoverId, activeId } = useSnapshot(interactionState);
+
+  const transRef = useSpringRef();
+  const transitions = useTransition(hoverId, {
+    ref: transRef,
+    keys: null,
+    from: {
+      opacity: 0,
+      position:
+        hoverId == -1 ? [0, 0, 0] : positions[hoverId].map((v, i) => v + 1),
+    },
+    enter: {
+      opacity: 1,
+      position: hoverId == -1 ? [0, 0, 0] : positions[hoverId],
+    },
+    leave: {
+      opacity: 0,
+      position:
+        hoverId == -1 ? [0, 0, 0] : positions[hoverId].map((v) => v - 1),
+    },
+  });
+
+  useEffect(() => {
+    transRef.start();
+  }, [hoverId, transRef]);
+
+  return (
+    <>
+      {transitions((style, item, t, i) => {
+        return item == -1 ? (
+          <></>
+        ) : (
+          <AnimatedText
+            {...config}
+            fillOpacity={style.opacity}
+            position={style.position}
+          >
+            {contents[item]}
+          </AnimatedText>
+        );
+      })}
     </>
   );
 };
@@ -204,14 +276,18 @@ const Crystal = ({
 export const CrystalArray = () => {
   const { value: count } = useSnapshot(countSate);
   const { hoverId } = useSnapshot(interactionState);
-  const [content, setContent] = useState<Record<string, "title"> | null>(null);
+  const [content, setContent] = useState<Record<
+    string,
+    {
+      title: string;
+      content: string;
+    }
+  > | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "/data/content.json"
-        );
+        const response = await fetch("/data/content.json");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -223,7 +299,7 @@ export const CrystalArray = () => {
     };
 
     fetchData();
-  }, []); 
+  }, []);
 
   const crystals = useMemo(() => {
     const temp = [];
@@ -237,21 +313,56 @@ export const CrystalArray = () => {
     return temp;
   }, [count]);
 
+  const titles = Array(count)
+    .fill(0)
+    .map((v, i) => (content ? content[i].title : "Loading..."));
+
   return (
     <>
-      {crystals.map((psr, i) => {
-        return (
-          <Crystal
-            key={i}
-            id={i}
-            args={psr}
-            // @ts-ignore
-            title={content ? content[i].title : "Loading..."}
-            // @ts-ignore
-            content={content ? content[i].content : "Loading..."}
-          />
-        );
-      })}
+      <>
+        {crystals.map((psr, i) => {
+          return (
+            <Crystal
+              key={i}
+              id={i}
+              args={psr}
+              // @ts-ignore
+              // title={content ? content[i].title : "Loading..."}
+              // // @ts-ignore
+              // content={content ? content[i].content : "Loading..."}
+            />
+          );
+        })}
+      </>
+      <>
+        <CrystalText
+          config={{
+            fontSize: 2,
+            color: "#ffffff",
+            rotation: [0, 3.14, 0],
+            font: "/fonts/serif.ttf",
+          }}
+          contents={titles}
+          positions={crystals.map((v) => v.position)}
+        />
+      </>
     </>
   );
 };
+
+{
+  /* <AnimatedText
+  fillOpacity={titleFillOpacity}
+  // @ts-ignore
+  position={titlePosition}
+  whiteSpace={"overflowWrap"}
+  strokeOpacity={0}
+  maxWidth={10}
+  fontSize={2}
+  color="#ffffff"
+  rotation={[0, 3.14, 0]}
+  font={"/fonts/serif.ttf"}
+>
+  {title}
+</AnimatedText> */
+}

@@ -3,7 +3,7 @@
 import { Canvas } from "@react-three/fiber";
 import { BakeShadows, Environment } from "@react-three/drei";
 import * as THREE from "three";
-import {  proxy } from "valtio";
+import { proxy } from "valtio";
 import { Particles } from "./particles";
 import { CrystalArray } from "./crystals";
 import { CameraRig } from "./camera";
@@ -11,7 +11,7 @@ import { PostPro } from "./postpro";
 import { ForegroundPlane, RingLight, SceneManager } from "./misc";
 import React, { useMemo } from "react";
 
-const loader = new THREE.TextureLoader().setPath( 'images/background/' );
+const loader = new THREE.TextureLoader().setPath('images/background/');
 
 
 
@@ -23,7 +23,7 @@ export const interactionState = proxy<{
   hoverId: number;
   activeId: number;
   activeRef: THREE.Mesh | null;
-  textures: {[key:string]:THREE.Texture} | null;
+  textures: { [key: string]: THREE.Texture } | null;
 }>({
   hoverId: -1,
   activeId: -1,
@@ -56,9 +56,9 @@ export default function Visual() {
       <group>
         <RingLight />
         <CrystalArray />
-        <Particles count={6000} />
+        {/* <Particles count={6000} /> */}
       </group>
-      
+
       <group>
         <CameraRig />
         <PostPro />
@@ -68,4 +68,4 @@ export default function Visual() {
       <Environment preset="warehouse" />
     </Canvas>
   );
-  }
+}
