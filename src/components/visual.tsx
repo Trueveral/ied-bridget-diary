@@ -1,15 +1,14 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { BakeShadows, Environment } from "@react-three/drei";
+import { BakeShadows, Environment, Icosahedron } from "@react-three/drei";
 import * as THREE from "three";
 import { proxy } from "valtio";
 import { Particles } from "./particles";
 import { CrystalArray } from "./crystals";
 import { CameraRig } from "./camera";
 import { PostPro } from "./postpro";
-import { ForegroundPlane, RingLight, SceneManager } from "./misc";
-import React, { useMemo } from "react";
+import { RingLight, SceneManager } from "./misc";
 
 export const countSate = proxy({
   value: 10,
@@ -29,12 +28,12 @@ export const interactionState = proxy<{
 
 export default function Visual() {
   return (
-    <Canvas className="bg-black" shadows dpr={[1, 1.5]} eventPrefix="client">
+    <Canvas className="bg-grey" shadows dpr={[1, 1.5]} eventPrefix="client">
       {/* <PrepareTextures /> */}
       <group>
         <RingLight />
-        <CrystalArray />
-        {/* <Particles count={6000} /> */}
+        {/* <CrystalArray /> */}
+        <Particles count={6000} />
       </group>
       <group>
         <CameraRig />
