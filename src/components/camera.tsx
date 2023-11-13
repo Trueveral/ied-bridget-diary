@@ -12,7 +12,7 @@ export const CameraRig = () => {
         <OrthographicCamera
           makeDefault
           rotation={[0, 0, 0]}
-          position={[0, 0, -15]}
+          position={[0, 0, 15]}
           zoom={20}
           near={-20}
           far={1000}

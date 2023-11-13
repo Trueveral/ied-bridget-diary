@@ -28,12 +28,12 @@ export const interactionState = proxy<{
 
 export default function Visual() {
   return (
-    <Canvas className="bg-grey" shadows dpr={[1, 1.5]} eventPrefix="client">
+    <Canvas className="bg-pink-600" shadows dpr={[1, 1.5]} eventPrefix="client">
       {/* <PrepareTextures /> */}
       <group>
         <RingLight />
         {/* <CrystalArray /> */}
-        <Particles count={6000} />
+        {/* <Particles count={6000} /> */}
       </group>
       <group>
         <CameraRig />

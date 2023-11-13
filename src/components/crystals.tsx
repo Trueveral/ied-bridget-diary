@@ -73,7 +73,7 @@ const Crystal = ({
           <CrystalMaterial />
         </animated.mesh>
       </Float>
-      <mesh position={[args.position[0], args.position[1], -40]}>
+      {/* <mesh position={[args.position[0], args.position[1], -40]}>
         <pointLight
           // @ts-ignore
           ref={lightRef}
@@ -81,7 +81,7 @@ const Crystal = ({
           intensity={0}
           color="#ffffff"
         />
-      </mesh>
+      </mesh> */}
     </>
   );
 };
@@ -102,8 +102,9 @@ const CrystalText = ({
   contents: string[];
   positions: [number, number, number][];
 }) => {
-  const { hoverId, activeId } = useSnapshot(interactionState);
+  const { hoverId } = useSnapshot(interactionState);
   const texts = useCrystalTextNodes(config, contents);
+  const [prevHoverId, setPrevHoverId] = useState(-1);
 
   const transRef = useSpringRef();
   const transitions = useTransition(hoverId, {
@@ -112,7 +113,7 @@ const CrystalText = ({
     from: {
       opacity: 0,
       position:
-        hoverId == -1 ? [0, 0, 0] : positions[hoverId].map((v, i) => v + 1),
+        hoverId == -1 ? [0, 0, 0] : positions[hoverId].map((v, i) => v - 1),
     },
     enter: {
       opacity: 1,
@@ -120,8 +121,7 @@ const CrystalText = ({
     },
     leave: {
       opacity: 0,
-      position:
-        hoverId == -1 ? [0, 0, 0] : positions[hoverId].map((v) => v - 1),
+      position: [0, 0, 0],
     },
   });
 
@@ -156,7 +156,7 @@ export const CrystalArray = () => {
     const temp = [];
     for (let i = 0; i < count; i++) {
       const offset = i - count / 2;
-      const position = [offset * 6 + Math.random(), 6 * Math.sin(i), -10];
+      const position = [offset * 6 + Math.random(), 6 * Math.sin(i), 0];
       const scale = [1, 1, 1];
       const rotation = [0, 0, 0];
       temp.push({ position, scale, rotation });
@@ -176,11 +176,11 @@ export const CrystalArray = () => {
         config={{
           fontSize: 2,
           color: "#ffffff",
-          rotation: [0, 3.14, 0],
+          rotation: [0, 0, 0],
           font: "/fonts/serif.ttf",
         }}
         contents={titles}
-        positions={crystals.map((v) => v.position as [number, number, number])}
+        positions={crystals.map(v => v.position as [number, number, number])}
       />
     </group>
   );

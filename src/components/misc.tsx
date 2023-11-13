@@ -39,7 +39,7 @@ export const SceneManager = () => {
 };
 
 export const ForegroundPlane = () => {
-  const loader = new THREE.TextureLoader().setPath('images/background/');
+  const loader = new THREE.TextureLoader().setPath("images/background/");
   // const textures = {} as { [key: string]: THREE.Texture };
   const { hoverId, activeId } = useSnapshot(interactionState);
   const imageRef = React.useRef<THREE.Mesh>();
@@ -55,29 +55,56 @@ export const ForegroundPlane = () => {
   // interactionState.textures = textures;
 
   useFrame((state, delta) => {
-    easing.damp(imageRef.current!!.material as THREE.MeshBasicMaterial, "opacity", activeId == -1 ? 0 : 1, 0.3, delta);
-    easing.damp(coverRef.current!!.material as THREE.MeshLambertMaterial, "opacity", [8,7,6,4,2].includes(activeId) ? 0.7 : 0, 0.3, delta);
+    easing.damp(
+      imageRef.current!!.material as THREE.MeshBasicMaterial,
+      "opacity",
+      activeId == -1 ? 0 : 1,
+      0.3,
+      delta
+    );
+    easing.damp(
+      coverRef.current!!.material as THREE.MeshLambertMaterial,
+      "opacity",
+      [8, 7, 6, 4, 2].includes(activeId) ? 0.7 : 0,
+      0.3,
+      delta
+    );
   });
 
   return (
     <mesh>
-      <Plane args={[100, 80]} position={[0, 0, -15.5]} rotation={[0, -Math.PI, 0]} material={new THREE.MeshLambertMaterial({
-        color: "#000000",
-        transparent: true,
-        opacity: 0,
-      })}
+      <Plane
+        args={[100, 80]}
+        position={[0, 0, -15.5]}
+        rotation={[0, -Math.PI, 0]}
+        material={
+          new THREE.MeshLambertMaterial({
+            color: "#000000",
+            transparent: true,
+            opacity: 0,
+          })
+        }
         // @ts-ignore
         ref={coverRef}
       />
       <Image
         // @ts-ignore
         ref={imageRef}
-        url={activeId == -1 ? `images/background/black.webp` : `images/background/${9 - (activeId) + 1}.webp`} position={[0, 0, -15]} rotation={[0, -Math.PI, 0]} scale={[80, 45]}
-        opacity={0} transparent
+        url={
+          activeId == -1
+            ? `images/background/black.webp`
+            : `images/background/${9 - activeId + 1}.webp`
+        }
+        position={[0, 0, -15]}
+        rotation={[0, -Math.PI, 0]}
+        scale={[80, 45]}
+        opacity={0}
+        transparent
+        alt=""
       />
     </mesh>
-  )
-}
+  );
+};
 
 export const RingLight = () => {
   const { activeId } = useSnapshot(interactionState);
@@ -91,12 +118,12 @@ export const RingLight = () => {
   return (
     <>
       <mesh position={[0, 0, 5]}>
-        <animated.pointLight
+        {/* <animated.pointLight
           position={[0, 0, 5]}
           intensity={intensity}
-          color="white"
+          color="red"
           distance={1000}
-        />
+        /> */}
         <ringGeometry args={[12, 10, 70]} />
         <meshStandardMaterial />
       </mesh>
