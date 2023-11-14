@@ -10,7 +10,7 @@ export const CrystalMaterial = () => {
       thickness={1}
       anisotropy={1}
       samples={10}
-      color="#ffffff"
+      color="#fff"
       transparent
       opacity={0.8}
       distortionScale={0.1}
@@ -18,3 +18,5 @@ export const CrystalMaterial = () => {
     />
   );
 };
+
+export const TextMaterial = () => {};

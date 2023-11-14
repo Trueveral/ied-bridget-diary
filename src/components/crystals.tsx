@@ -73,7 +73,7 @@ const Crystal = ({
           <CrystalMaterial />
         </animated.mesh>
       </Float>
-      {/* <mesh position={[args.position[0], args.position[1], -40]}>
+      <mesh position={[args.position[0], args.position[1], -40]}>
         <pointLight
           // @ts-ignore
           ref={lightRef}
@@ -81,7 +81,7 @@ const Crystal = ({
           intensity={0}
           color="#ffffff"
         />
-      </mesh> */}
+      </mesh>
     </>
   );
 };
@@ -175,7 +175,7 @@ export const CrystalArray = () => {
       <CrystalText
         config={{
           fontSize: 2,
-          color: "#ffffff",
+          color: "#fff",
           rotation: [0, 0, 0],
           font: "/fonts/serif.ttf",
         }}

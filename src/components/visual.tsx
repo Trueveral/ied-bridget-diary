@@ -1,7 +1,12 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { BakeShadows, Environment, Icosahedron } from "@react-three/drei";
+import {
+  BakeShadows,
+  CameraControls,
+  Environment,
+  Icosahedron,
+} from "@react-three/drei";
 import * as THREE from "three";
 import { proxy } from "valtio";
 import { Particles } from "./particles";
@@ -28,17 +33,17 @@ export const interactionState = proxy<{
 
 export default function Visual() {
   return (
-    <Canvas className="bg-pink-600" shadows dpr={[1, 1.5]} eventPrefix="client">
-      {/* <PrepareTextures /> */}
+    <Canvas shadows dpr={[1, 1.5]} eventPrefix="client">
+      <color attach="background" args={["#000"]} />
       <group>
         <RingLight />
-        {/* <CrystalArray /> */}
-        {/* <Particles count={6000} /> */}
+        <CrystalArray />
+        <Particles count={6000} />
       </group>
       <group>
-        <CameraRig />
         <PostPro />
         <BakeShadows />
+        <CameraRig />
       </group>
       <SceneManager />
       <Environment preset="warehouse" />

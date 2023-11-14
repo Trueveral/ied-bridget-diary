@@ -75,7 +75,7 @@ export const Particles = ({ count }: { count: number }) => {
           new THREE.MeshLambertMaterial({
             color: "#ffffff",
             transparent: true,
-            opacity: 0.3,
+            opacity: 1,
           })
         }
       >
