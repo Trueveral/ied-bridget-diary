@@ -19,6 +19,7 @@ import { easing } from "maath";
 
 export const FaceBox = ({ position }) => {
   const boxRef = useRef();
+  const materialRef = useRef();
   const { viewport, clock } = useThree();
   let initial = useRef(0);
 
@@ -44,6 +45,12 @@ export const FaceBox = ({ position }) => {
     );
     boxRef.current.scale.set(initialScale, initialScale, initialScale);
     initial.current = initialScale;
+    const initialOpacity = THREE.MathUtils.lerp(
+      0.7,
+      0.3,
+      Math.min(1, distance / 5)
+    );
+    materialRef.current.opacity = initialOpacity;
   }, [position, viewport.width]);
 
   useFrame(() => {
@@ -54,7 +61,12 @@ export const FaceBox = ({ position }) => {
 
   return (
     <Box ref={boxRef} args={[0.1, 0.1, 0.1]} position={position}>
-      <meshStandardMaterial color="white" transparent opacity={0.3} />
+      <meshStandardMaterial
+        ref={materialRef}
+        color="white"
+        transparent
+        opacity={0.3}
+      />
     </Box>
   );
 };

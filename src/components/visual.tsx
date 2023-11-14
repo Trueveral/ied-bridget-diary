@@ -37,7 +37,7 @@ export default function Visual() {
   return (
     <Canvas shadows dpr={[1, 1.5]}>
       {/* <CameraRig /> */}
-      {/* <OrthographicCamera makeDefault position={[0, 0, 10]} /> */}
+
       <MainComponent />
       <color attach="background" args={["#f17070"]} />
       <group>
