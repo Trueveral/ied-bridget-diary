@@ -16,6 +16,7 @@ import { CameraRig } from "./camera";
 import { PostPro } from "./postpro";
 import { FaceBox, MainComponent, SceneManager } from "./misc";
 import { Ring } from "./ring";
+import InputNode from "three/examples/jsm/nodes/core/InputNode.js";
 
 export const countSate = proxy({
   value: 10,
@@ -35,21 +36,21 @@ export const interactionState = proxy<{
 
 export default function Visual() {
   return (
-    <Canvas shadows dpr={[1, 1.5]}>
-      {/* <CameraRig /> */}
-
-      <MainComponent />
-      <color attach="background" args={["#f17070"]} />
-      <group>
-        <Ring />
-        {/* <CrystalArray /> */}
-        {/* <Particles count={6000} /> */}
-      </group>
-      {/* <PostPro /> */}
-      <BakeShadows />
-
-      <SceneManager />
-      <Environment preset="warehouse" />
-    </Canvas>
+    <>
+      <Canvas shadows dpr={[1, 1.5]}>
+        {/* <CameraRig /> */}
+        <MainComponent />
+        <color attach="background" args={["#f17070"]} />
+        <group>
+          <Ring />
+          {/* <CrystalArray /> */}
+          {/* <Particles count={6000} /> */}
+        </group>
+        {/* <PostPro /> */}
+        <BakeShadows />
+        <SceneManager />
+        <Environment preset="warehouse" />
+      </Canvas>
+    </>
   );
 }
