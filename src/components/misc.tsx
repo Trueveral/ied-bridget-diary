@@ -2,11 +2,83 @@ import { useSnapshot } from "valtio";
 import * as THREE from "three";
 import { interactionState } from "./visual";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect } from "react";
-import { Image, Plane } from "@react-three/drei";
+import { use, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Box,
+  FaceControls,
+  FaceControlsApi,
+  FaceLandmarker,
+  Icosahedron,
+  Image,
+  Plane,
+  Sphere,
+} from "@react-three/drei";
 import { animated, easings, useSpring } from "@react-spring/three";
 import React from "react";
 import { easing } from "maath";
+
+export const FaceBox = ({ position }) => {
+  const boxRef = useRef();
+  const { viewport, clock } = useThree();
+  let initial = useRef(0);
+
+  // useFrame(() => {
+  //   // const direction = new THREE.Vector2().subVectors(
+  //   //   pointer,
+  //   //   new THREE.Vector2(position.x, position.y)
+  //   // );
+  //   // const distance = direction.length();
+  //   // const scale = THREE.MathUtils.lerp(0.1, 2, 1 - Math.min(1, distance / 5));
+  //   // boxRef.current.scale.set(scale, scale, scale);
+  // });
+
+  useEffect(() => {
+    const center = new THREE.Vector2(0, 0);
+    const distance = center.distanceTo(
+      new THREE.Vector2(position.x, position.y)
+    );
+    const initialScale = THREE.MathUtils.lerp(
+      0.01,
+      2,
+      1 - Math.min(1, distance / 5)
+    );
+    boxRef.current.scale.set(initialScale, initialScale, initialScale);
+    initial.current = initialScale;
+  }, [position, viewport.width]);
+
+  useFrame(() => {
+    const scale =
+      initial.current + (Math.sin(3 * clock.getElapsedTime()) + 1) / 2;
+    boxRef.current.scale.set(scale, scale, scale);
+  });
+
+  return (
+    <Box ref={boxRef} args={[0.1, 0.1, 0.1]} position={position}>
+      <meshStandardMaterial color="white" transparent opacity={0.3} />
+    </Box>
+  );
+};
+
+export const FaceBoxArray = () => {
+  const { viewport } = useThree();
+  const positions = useMemo(() => {
+    const positions = [];
+    for (let x = -viewport.width / 2; x < viewport.width / 2; x += 0.4) {
+      for (let y = -viewport.height / 2; y < viewport.height / 2; y += 0.4) {
+        positions.push(new THREE.Vector3(x, y, -1));
+      }
+    }
+    return positions;
+  }, [viewport.width, viewport.height]);
+
+  return positions.map((position, index) => (
+    <FaceBox key={index} position={position} />
+  ));
+};
+
+export const MainComponent = () => {
+  return <FaceBoxArray />;
+};
 
 export const SceneManager = () => {
   const { activeRef } = useSnapshot(interactionState);
@@ -103,30 +175,5 @@ export const ForegroundPlane = () => {
         alt=""
       />
     </mesh>
-  );
-};
-
-export const RingLight = () => {
-  const { activeId } = useSnapshot(interactionState);
-  const { intensity } = useSpring({
-    intensity: activeId == -1 ? 1000 : 0,
-    config: {
-      easing: easings.easeInOutSine,
-      duration: 200,
-    },
-  });
-  return (
-    <>
-      <mesh position={[0, 0, 5]}>
-        {/* <animated.pointLight
-          position={[0, 0, 5]}
-          intensity={intensity}
-          color="red"
-          distance={1000}
-        /> */}
-        <ringGeometry args={[12, 10, 70]} />
-        <meshStandardMaterial />
-      </mesh>
-    </>
   );
 };

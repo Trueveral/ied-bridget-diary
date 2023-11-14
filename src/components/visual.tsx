@@ -6,6 +6,7 @@ import {
   CameraControls,
   Environment,
   Icosahedron,
+  OrthographicCamera,
 } from "@react-three/drei";
 import * as THREE from "three";
 import { proxy } from "valtio";
@@ -13,7 +14,8 @@ import { Particles } from "./particles";
 import { CrystalArray } from "./crystals";
 import { CameraRig } from "./camera";
 import { PostPro } from "./postpro";
-import { RingLight, SceneManager } from "./misc";
+import { FaceBox, MainComponent, SceneManager } from "./misc";
+import { Ring } from "./ring";
 
 export const countSate = proxy({
   value: 10,
@@ -33,18 +35,19 @@ export const interactionState = proxy<{
 
 export default function Visual() {
   return (
-    <Canvas shadows dpr={[1, 1.5]} eventPrefix="client">
-      <color attach="background" args={["#000"]} />
+    <Canvas shadows dpr={[1, 1.5]}>
+      {/* <CameraRig /> */}
+      {/* <OrthographicCamera makeDefault position={[0, 0, 10]} /> */}
+      <MainComponent />
+      <color attach="background" args={["#f17070"]} />
       <group>
-        <RingLight />
-        <CrystalArray />
-        <Particles count={6000} />
+        <Ring />
+        {/* <CrystalArray /> */}
+        {/* <Particles count={6000} /> */}
       </group>
-      <group>
-        <PostPro />
-        <BakeShadows />
-        <CameraRig />
-      </group>
+      {/* <PostPro /> */}
+      <BakeShadows />
+
       <SceneManager />
       <Environment preset="warehouse" />
     </Canvas>
