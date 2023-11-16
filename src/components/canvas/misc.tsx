@@ -1,6 +1,5 @@
 import { useSnapshot } from "valtio";
 import * as THREE from "three";
-import { interactionState } from "./visual";
 import { useFrame, useThree } from "@react-three/fiber";
 import { use, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -16,6 +15,7 @@ import {
 import { animated, easings, useSpring } from "@react-spring/three";
 import React from "react";
 import { easing } from "maath";
+import { interactionState } from "@/states/states";
 
 export const FaceBox = ({ position }) => {
   const boxRef = useRef();

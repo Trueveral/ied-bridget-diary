@@ -1,11 +1,11 @@
 import { useSnapshot } from "valtio";
-import { countSate, interactionState } from "../visual";
 import { SpringValue, animated, useSpring } from "@react-spring/three";
 import { useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useState } from "react";
 import { Text } from "@react-three/drei";
 import { textSchema } from "../../schemas/schemas";
 import { z } from "zod";
+import { countSate, interactionState } from "@/states/states";
 
 const AnimatedText = animated(Text);
 

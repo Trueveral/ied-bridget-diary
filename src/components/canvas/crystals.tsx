@@ -10,7 +10,6 @@ import {
 } from "@react-spring/three";
 import { Euler } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
-import { countSate, interactionState } from "./visual";
 import React from "react";
 import {
   useCrystalContents,
@@ -18,8 +17,9 @@ import {
   useCrystalTextNodes,
   useCrystalTitles,
   useText,
-} from "./hooks/crystal";
+} from "../hooks/crystal";
 import { CrystalMaterial } from "./materials";
+import { countSate, interactionState } from "@/states/states";
 // import { z } from "zod";
 
 const Crystal = ({

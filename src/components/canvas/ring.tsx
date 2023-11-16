@@ -1,8 +1,8 @@
 import { useSnapshot } from "valtio";
-import { interactionState } from "./visual";
 import { animated, easings, useSpring } from "@react-spring/three";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
+import { interactionState } from "@/states/states";
 
 export const Ring = () => {
   const { activeId } = useSnapshot(interactionState);

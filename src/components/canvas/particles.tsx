@@ -3,10 +3,10 @@ import * as THREE from "three";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useSnapshot } from "valtio";
-import { interactionState } from "./visual";
 import { easing } from "maath";
 import React from "react";
-import { useParticles } from "./hooks/vfx";
+import { useParticles } from "../hooks/vfx";
+import { interactionState } from "@/states/states";
 
 // ref: this code is largely based on: https://codesandbox.io/s/qpfgyp
 

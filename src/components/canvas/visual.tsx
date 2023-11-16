@@ -9,30 +9,12 @@ import {
   OrthographicCamera,
 } from "@react-three/drei";
 import * as THREE from "three";
-import { proxy } from "valtio";
 import { Particles } from "./particles";
 import { CrystalArray } from "./crystals";
 import { CameraRig } from "./camera";
 import { PostPro } from "./postpro";
 import { FaceBox, MainComponent, SceneManager } from "./misc";
 import { Ring } from "./ring";
-import InputNode from "three/examples/jsm/nodes/core/InputNode.js";
-
-export const countSate = proxy({
-  value: 10,
-});
-
-export const interactionState = proxy<{
-  hoverId: number;
-  activeId: number;
-  activeRef: THREE.Mesh | null;
-  textures: { [key: string]: THREE.Texture } | null;
-}>({
-  hoverId: -1,
-  activeId: -1,
-  activeRef: null,
-  textures: null,
-});
 
 export default function Visual() {
   return (

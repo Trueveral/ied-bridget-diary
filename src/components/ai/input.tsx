@@ -1,15 +1,47 @@
-"use client";
-
 import { useState } from "react";
 import { Icon } from "@iconify/react";
+import { useSnapshot } from "valtio";
+import { z } from "zod";
+import { aiState } from "@/states/states";
+
+const aiResponseSchema = z.object({
+  id: z.string(),
+  answer: z.string(),
+  created_at: z.number(),
+});
+
+type AiResponse = z.infer<typeof aiResponseSchema>;
 
 export const Input = () => {
   const [text, setText] = useState("");
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false);
-
+  const [isSending, setIsSending] = useState(false);
+  const { user, conversationId, responseText } = useSnapshot(aiState);
   const handleSend = async () => {
-    // 你的发送逻辑
+    setIsSending(prevState => !prevState);
+    await fetch("https://api.dify.ai/v1/chat-messages", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer app-VN5puGCnSY0v5nS37sVdYdMC`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        inputs: "",
+        query: text,
+        response_mode: "streaming",
+        conversation_id: "",
+        user: user,
+      }),
+    });
+
+    const eventSource = new EventSource("/api/proxy/v1/chat-messages");
+
+    eventSource.onmessage = e => {
+      console.log(e);
+      const data = JSON.parse(e.data);
+      console.log(data);
+    };
   };
 
   const startRecording = async () => {
@@ -17,7 +49,7 @@ export const Input = () => {
     const newRecorder = new MediaRecorder(stream);
     newRecorder.start();
 
-    newRecorder.ondataavailable = async (e) => {
+    newRecorder.ondataavailable = async e => {
       const audioBlob = e.data;
       const formData = new FormData();
       formData.append("file", audioBlob);
@@ -52,7 +84,7 @@ export const Input = () => {
       <input
         type="text"
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={e => setText(e.target.value)}
         className="w-full px-3 py-2 border border-gray-300 bg-gray-300 rounded-full text-red-400 font-bold focus:outline-none"
         aria-label="Text input"
         placeholder=""

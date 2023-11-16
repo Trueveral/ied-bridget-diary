@@ -1,15 +1,14 @@
-import Visual from "@/components/visual";
-import Overlay from "@/components/overlay";
-import { Input } from "@/components/input";
+import Visual from "@/components/canvas/visual";
+import { AI } from "@/components/ai/main";
 
 export default function Page() {
   return (
     <>
       <div className="w-screen h-screen">
-        <Visual />
+        {/* <Visual /> */}
         {/* <Overlay /> */}
       </div>
-      <Input />
+      <AI />
     </>
   );
 }

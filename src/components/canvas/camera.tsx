@@ -3,7 +3,7 @@ import {
   OrthographicCamera,
   PerspectiveCamera,
 } from "@react-three/drei";
-import { useCameraSoftFollow } from "./hooks/control";
+import { useCameraSoftFollow } from "../hooks/control";
 import { useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 

@@ -1,6 +1,5 @@
 import { animated, easings, useSpring } from "@react-spring/three";
 import { useSnapshot } from "valtio";
-import { interactionState } from "./visual";
 import {
   Bloom,
   BrightnessContrast,
@@ -9,6 +8,7 @@ import {
   SMAA,
 } from "@react-three/postprocessing";
 import React from "react";
+import { interactionState } from "@/states/states";
 
 export const PostPro = () => {
   const { hoverId, activeId } = useSnapshot(interactionState);

@@ -1,7 +1,7 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useSnapshot } from "valtio";
-import { interactionState } from "../visual";
 import { easing } from "maath";
+import { interactionState } from "@/states/states";
 
 export const useCameraSoftFollow = () => {
   const { camera } = useThree();
