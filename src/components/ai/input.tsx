@@ -35,13 +35,25 @@ export const Input = () => {
       }),
     });
 
-    const eventSource = new EventSource("/api/proxy/v1/chat-messages");
+   if (response.ok) {
+     const reader = response.body.getReader();
+     let decoder = new TextDecoder("utf-8");
+     let data = "";
 
-    eventSource.onmessage = e => {
-      console.log(e);
-      const data = JSON.parse(e.data);
-      console.log(data);
-    };
+     reader.read().then(function processText({ done, value }) {
+       if (done) {
+         // All data has been read
+         // Now, you can parse the entire data and update responseText
+         aiState.responseText = JSON.parse(data).text;
+         return;
+       }
+
+       // Read some data
+       data += decoder.decode(value);
+       // Continue reading
+       return reader.read().then(processText);
+     });
+   }
   };
 
   const startRecording = async () => {
