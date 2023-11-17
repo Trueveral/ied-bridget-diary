@@ -15,13 +15,15 @@ import { CameraRig } from "./camera";
 import { PostPro } from "./postpro";
 import { FaceBox, MainComponent, SceneManager } from "./misc";
 import { Ring } from "./ring";
+import { AnimatedAICubes } from "./animations/ai";
+import { useTransition } from "@react-spring/three";
 
 export default function Visual() {
   return (
     <>
       <Canvas shadows dpr={[1, 1.5]}>
         {/* <CameraRig /> */}
-        <MainComponent />
+        <AnimatedAICubes />
         <color attach="background" args={["#f17070"]} />
         <group>
           <Ring />

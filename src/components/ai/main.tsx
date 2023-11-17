@@ -1,11 +1,13 @@
 "use client";
 
-import { Input } from "./input";
+import { AIInput } from "./input";
 import { Presentation } from "./presentation";
 
 export const AI = () => {
-  return (<>
-  {/* <Presentation/> */}
-    <Input />
-  </>)
-}
+  return (
+    <>
+      <Presentation />
+      <AIInput />
+    </>
+  );
+};

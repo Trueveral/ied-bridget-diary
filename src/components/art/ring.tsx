@@ -23,14 +23,14 @@ export const Ring = () => {
   return (
     <>
       <mesh position={[0, 0, 0]}>
-        <animated.pointLight
+        {/* <animated.pointLight
           position={[0, 0, 5]}
           intensity={1000}
           color="white"
           distance={1000}
-        />
+        /> */}
         <animated.ringGeometry args={[1, 0.8, 70]} />
-        <meshBasicMaterial side={THREE.DoubleSide} color="white" />
+        <meshBasicMaterial side={THREE.DoubleSide} color="white" opacity={0} />
       </mesh>
     </>
   );
