@@ -35,6 +35,7 @@ export const AIInput = () => {
     });
     // handleStream(responseRef.current ? responseRef.current : response);
     handleBlock(response);
+    aiState.status = "responding";
   };
 
   const handleSendMock = async () => {
@@ -90,10 +91,10 @@ export const AIInput = () => {
 
   return (
     <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4 min-w-min flex gap-2">
-      <Input onSendCallback={handleSendMock} />
-      <SendButton onSendCallback={handleSendMock} />
-      <RecordButton onSendCallback={handleSendMock} />
-      <TerminateButton onTerminateCallback={handleSendMock} />
+      <Input onSendCallback={handleSend} />
+      <SendButton onSendCallback={handleSend} />
+      <RecordButton onSendCallback={handleSend} />
+      <TerminateButton onTerminateCallback={handleSend} />
     </div>
   );
 };

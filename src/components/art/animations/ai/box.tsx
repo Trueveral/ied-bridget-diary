@@ -9,7 +9,7 @@ import { useSnapshot } from "valtio";
 
 const FaceBox = ({ position }) => {
   const { status } = useSnapshot(aiState);
-  const showCubes = status == "sending" || status == "inputing";
+  const showCubes = status == "inputing" || status == "responding";
   const boxRef = useRef();
   const materialRef = useRef();
   const { viewport, clock } = useThree();
@@ -45,7 +45,7 @@ const FaceBox = ({ position }) => {
     easing.damp(
       materialRef.current!!,
       "opacity",
-      showCubes ? THREE.MathUtils.lerp(0.7, 0.3, Math.min(1, distance / 5)) : 0,
+      showCubes ? THREE.MathUtils.lerp(0.3, 0.1, Math.min(1, distance / 5)) : 0,
       0.3
     );
   });

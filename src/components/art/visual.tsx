@@ -15,8 +15,9 @@ import { CameraRig } from "./camera";
 import { PostPro } from "./postpro";
 import { FaceBox, MainComponent, SceneManager } from "./misc";
 import { Ring } from "./ring";
-import { AnimatedAICubes } from "./animations/ai";
+import { AnimatedAICubes } from "./animations/ai/box";
 import { useTransition } from "@react-spring/three";
+import { RingArray } from "./animations/ai/ring";
 
 export default function Visual() {
   return (
@@ -24,9 +25,15 @@ export default function Visual() {
       <Canvas shadows dpr={[1, 1.5]}>
         {/* <CameraRig /> */}
         <AnimatedAICubes />
+        <pointLight
+          position={[0, 0, 5]}
+          intensity={1000}
+          color="white"
+          distance={1000}
+        />
         <color attach="background" args={["#f17070"]} />
         <group>
-          <Ring />
+          <RingArray number={6} />
           {/* <CrystalArray /> */}
           {/* <Particles count={6000} /> */}
         </group>
