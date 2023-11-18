@@ -1,0 +1,8 @@
+.textarea::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+/* 对于Firefox */
+.textarea {
+  scrollbar-color: transparent transparent;
+}

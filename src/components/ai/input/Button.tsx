@@ -8,28 +8,13 @@ export const SendButton = ({ onSendCallback }: { onSendCallback: any }) => {
     <button
       onClick={onSendCallback}
       disabled={!canSend}
-      className={`transition ease-in-out duration-300 rounded-full p-2 ${
+      className={`transition ease-in-out duration-300 rounded-full p-2 w-10 h-10 flex items-center justify-center ${
         canSend
-          ? "bg-red-500 text-white"
+          ? "bg-blue-600 text-white"
           : "bg-gray-300 text-gray-500 cursor-not-allowed"
       }`}
     >
-      {/* 图标插槽，可以替换为任何图标 */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        className={`h-6 w-6 ${canSend ? "visible" : "invisible"}`}
-      >
-        {/* 这里是一个示例图标，可以替换为具体的图标 */}
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 13l4 4L19 7"
-        />
-      </svg>
+      <Icon icon="mingcute:send-fill" color="white" />
     </button>
   );
 };
@@ -44,28 +29,29 @@ export const TerminateButton = ({
     <button
       onClick={onTerminateCallback}
       disabled={!canTerminate}
-      className={`transition ease-in-out duration-300 rounded-full p-2 ${
+      className={`transition ease-in-out duration-300 rounded-full w-10 h-10 flex items-center justify-center p-2 ${
         canTerminate
-          ? "bg-red-500 text-white"
+          ? "bg-blue-600 text-white"
           : "bg-gray-300 text-gray-500 cursor-not-allowed"
       }`}
     >
+      <Icon icon="ic:round-stop" color="white" fill="white" />
+    </button>
+  );
+};
+
+export const StartNewConversationButton = ({
+  onClickCallback,
+}: {
+  onClickCallback: any;
+}) => {
+  return (
+    <button
+      onClick={onClickCallback}
+      className="transition ease-in-out duration-300 rounded-full p-2 bg-blue-600 text-white w-10 h-10 flex items-center justify-center"
+    >
       {/* 图标插槽，可以替换为任何图标 */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        className={`h-6 w-6 ${canTerminate ? "visible" : "invisible"}`}
-      >
-        {/* 这里是一个示例图标，可以替换为具体的图标 */}
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 13l4 4L19 7"
-        />
-      </svg>
+      <Icon icon="healthicons:cleaning" color="white" fill="white" />
     </button>
   );
 };
@@ -75,27 +61,10 @@ export const RecordButton = ({ onSendCallback }: { onSendCallback: any }) => {
   return (
     <button
       // onClick={isRecording ? stopRecording : startRecording}
-      className="transition ease-in-out duration-300 rounded-full p-2 bg-red-500 text-white"
+      className="transition ease-in-out duration-300 rounded-full p-2 bg-blue-600 text-white w-10 h-10 flex items-center justify-center"
     >
       {isRecording ? (
-        // 正方形图标
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className="h-6 w-6"
-        >
-          <rect
-            x="5"
-            y="5"
-            width="14"
-            height="14"
-            stroke="currentColor"
-            fill="currentColor"
-            strokeWidth="2"
-          />
-        </svg>
+        <Icon icon="ic:round-stop" color="white" fill="white" />
       ) : (
         // 麦克风图标
         <Icon icon="ph:microphone-fill" color="white" fill="white" />

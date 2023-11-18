@@ -31,11 +31,11 @@ export default function Visual() {
           color="white"
           distance={1000}
         />
-        <color attach="background" args={["#f17070"]} />
+        <color attach="background" args={["#1900ff"]} />
         <group>
           <RingArray number={6} />
           {/* <CrystalArray /> */}
-          {/* <Particles count={6000} /> */}
+          <Particles count={6000} />
         </group>
         {/* <PostPro /> */}
         <BakeShadows />

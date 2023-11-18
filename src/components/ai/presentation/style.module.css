@@ -1,0 +1,19 @@
+.fadeText {
+  /* 确保容器大小足够包含文本 */
+  display: inline-block;
+  background: linear-gradient(
+    to right,
+    #ffffff 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  -webkit-mask-image: linear-gradient(to right, black 50%, transparent 100%);
+  mask-image: linear-gradient(to right, black 50%, transparent 100%);
+  transition: background 0.5s ease, -webkit-mask-image 0.5s ease;
+  transition: background 0.5s ease, mask-image 0.5s ease;
+}
+
+.fade-text:hover {
+  background: linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 0%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, transparent 0%);
+  mask-image: linear-gradient(to right, black 0%, transparent 0%);
+}

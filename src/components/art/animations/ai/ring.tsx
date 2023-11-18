@@ -32,9 +32,10 @@ const Ring = ({
   } = useThree();
   const outerRadius = width > height ? width * 0.01 : height * 0.01;
   const innerRadius = outerRadius * 0.8;
+  const shouldAnimate = status == "sending" || status == "responding";
 
   useFrame((state, delta) => {
-    if (status == "sending") {
+    if (shouldAnimate) {
       meshRef.current!!.rotation.x += animationRotation[0] * 0.1;
       meshRef.current!!.rotation.y += animationRotation[1] * 0.1;
       meshRef.current!!.rotation.z += animationRotation[2] * 0.1;
@@ -43,19 +44,14 @@ const Ring = ({
     easing.dampE(
       meshRef.current!!.rotation,
       [
-        status != "sending" ? Math.ceil(rx / Math.PI) * Math.PI : rx,
-        status != "sending" ? Math.ceil(ry / Math.PI) * Math.PI : ry,
-        status != "sending" ? Math.ceil(rz / Math.PI) * Math.PI : rz,
+        shouldAnimate ? rx : Math.ceil(rx / Math.PI) * Math.PI,
+        shouldAnimate ? ry : Math.ceil(ry / Math.PI) * Math.PI,
+        shouldAnimate ? rz : Math.ceil(rz / Math.PI) * Math.PI,
       ],
       0.5,
       delta
     );
-    easing.damp(
-      materialRef.current!!,
-      "opacity",
-      status == "sending" || status == "idle" ? 1 : 0,
-      0.5
-    );
+    easing.damp(materialRef.current!!, "opacity", shouldAnimate ? 1 : 0, 0.5);
   });
 
   return (
