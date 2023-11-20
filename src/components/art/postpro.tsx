@@ -8,15 +8,19 @@ import {
   SMAA,
 } from "@react-three/postprocessing";
 import React from "react";
-import { interactionState } from "@/states/states";
+import { interactionState, aiState } from "@/states/states";
+
+const SERET_CODE = "KeasonAya";
 
 export const PostPro = () => {
   const { hoverId, activeId } = useSnapshot(interactionState);
+  const { userMessage } = useSnapshot(aiState);
+  const secretHit = userMessage.includes(SERET_CODE);
   const AnimatedBrightnessContrast = animated(BrightnessContrast);
   const AnimatedBloom = animated(Bloom);
   const { brightness, intensity: bloomIntensity } = useSpring({
     brightness: activeId == -1 ? 0 : -0.1,
-    intensity: activeId == -1 ? 1 : 0.3,
+    intensity: secretHit ? 1 : 0,
     config: {
       easing: easings.easeInOutSine,
     },
@@ -28,15 +32,15 @@ export const PostPro = () => {
         luminanceThreshold={0.3}
         mipmapBlur
         luminanceSmoothing={0.0}
-        intensity={bloomIntensity}
+        intensity={1}
       />
-      <DepthOfField
+      {/* <DepthOfField
         target={[0, 0, 13]}
         focalLength={0.3}
         bokehScale={20}
         height={0}
       />
-      <SMAA />
+      <SMAA /> */}
       {/* <AnimatedBrightnessContrast brightness={brightness} contrast={0} /> */}
     </EffectComposer>
   );

@@ -8,12 +8,33 @@
   );
   -webkit-mask-image: linear-gradient(to right, black 50%, transparent 100%);
   mask-image: linear-gradient(to right, black 50%, transparent 100%);
-  transition: background 0.5s ease, -webkit-mask-image 0.5s ease;
-  transition: background 0.5s ease, mask-image 0.5s ease;
 }
 
-.fade-text:hover {
-  background: linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 0%);
-  -webkit-mask-image: linear-gradient(to right, black 0%, transparent 0%);
-  mask-image: linear-gradient(to right, black 0%, transparent 0%);
+.fadetext:hover {
+  background: linear-gradient(
+    to right,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0) 0%
+  ) !important;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0%,
+    transparent 100%
+  ) !important;
+  mask-image: linear-gradient(to right, black 0%, transparent 100%) !important;
+}
+
+.presentationArea::-webkit-scrollbar {
+  display: none;
+}
+.presentationArea {
+  scrollbar-width: none; /* firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.saveButton {
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 }

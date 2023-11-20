@@ -1,0 +1,11 @@
+States of Animation:
+1. Idle (Normal)
+2. Think (Responding)
+3. Happy
+4. Sad
+5. Angry
+6. Concentrated (Input)
+7. Narrative
+8. Surprised
+9. She's a Rainbow (Special)
+10. **** **** (Special)

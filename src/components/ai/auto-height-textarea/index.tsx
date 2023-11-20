@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useRef } from "react";
 import cn from "classnames";
+import { aiState } from "@/states/states";
 
 type IProps = {
   placeholder?: string;
@@ -73,7 +74,7 @@ const AutoHeightTextarea = forwardRef(
         </div>
         <textarea
           ref={ref}
-          autoFocus={autoFocus}
+          autoFocus={false}
           className={cn(
             className,
             "absolute inset-0 resize-none overflow-y-auto"
@@ -83,6 +84,16 @@ const AutoHeightTextarea = forwardRef(
           onKeyDown={onKeyDown}
           onKeyUp={onKeyUp}
           value={value}
+          // onFocus={() => {
+          //   if (aiState.status === "idle") {
+          //     aiState.status = "concentrating";
+          //   }
+          // }}
+          // onBlur={() => {
+          //   if (aiState.status === "concentrating") {
+          //     aiState.status = "idle";
+          //   }
+          // }}
         />
       </div>
     );

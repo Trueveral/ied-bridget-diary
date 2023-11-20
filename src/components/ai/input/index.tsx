@@ -1,9 +1,13 @@
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, use, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useSnapshot } from "valtio";
 import { z } from "zod";
 import { aiState } from "@/states/states";
-import { AIResponse, exchangeChatMessage } from "@/helpers/ai/dataExchange";
+import {
+  AIResponse,
+  exchangeChatMessage,
+  processStream,
+} from "@/helpers/ai/dataExchange";
 import {
   RecordButton,
   SendButton,
@@ -13,29 +17,91 @@ import {
 import AutoHeightTextarea from "../auto-height-textarea";
 import cn from "classnames";
 import s from "./style.module.css";
+import { escape } from "querystring";
+import { generateUUID } from "three/src/math/MathUtils.js";
+import { resetAIState } from "@/helpers/ai/base";
+import { useAIActionGuard } from "@/components/hooks/ai";
+
+const SHE_S_A_RAINBOW =
+  "She comes in colours everywhere, She combs her hair, She's like a rainbow, Coming, colours in the air, Oh, everywhere, She comes in colours, She comes in colours everywhere, She combs her hair, She's like a rainbow, Coming, colours in the air, Oh, everywhere, She comes in colours, Have you seen her dressed in blue?, See the sky in front of you, And her face is like a sail, Speck of white so fair and pale, Have you seen a lady fairer?, She comes in colours everywhere, She combs her hair, She's like a rainbow, Coming, colours in the air, Oh, everywhere, She comes in colours, Have you seen her all in gold?, Like a queen in days of old";
+
+export const SERET_CODE = "KeasonAya";
 
 export const AIInput = () => {
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
-  const { user, conversationId, inputText } = useSnapshot(aiState);
+  const { user, conversationId, inputText, userMessage } = useSnapshot(aiState);
+  const isUseInputMethod = useRef(false);
+  const { canSend } = useAIActionGuard();
+
+  const onData = (res: AIResponse) => {
+    // console.log(res.answer);
+    aiState.responseText += res.answer;
+    aiState.conversationId = res.conversation_id;
+  };
+
+  const onError = (err: any) => {
+    aiState.responseText = "Sorry, an error occurred. Please try again.";
+    console.error(err);
+  };
+
+  const onCompleted = async () => {
+    aiState.pendingEmotion = true;
+    const { type, ratio } = await globalThis
+      .fetch(`${process.env.NEXT_PUBLIC_TWINWORD_API_URL}/sentiment_analyze/`, {
+        method: "POST",
+        headers: {
+          "X-RapidAPI-Key": process.env.NEXT_PUBLIC_TWINWORD_API_KEY || "",
+          "X-RapidAPI-Host": "twinword-twinword-bundle-v1.p.rapidapi.com",
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          text: aiState.responseText,
+        }),
+      })
+      .then(response => {
+        if (/^2/.test(response.status.toString())) {
+          return response.json();
+        }
+      })
+      .then((data: { type: "positive" | "negative"; ratio: number }) => {
+        return {
+          type: data.type,
+          ratio: data.ratio,
+        };
+      });
+
+    if (ratio < 0.2) {
+      aiState.status = "narrative";
+    } else {
+      if (type === "positive") {
+        aiState.status = "happy";
+      }
+      if (type === "negative") {
+        if (ratio > 0.6) {
+          aiState.status = "angry";
+        } else {
+          aiState.status = "sad";
+        }
+      }
+    }
+  };
 
   // create a context for inputText
 
   const handleSend = async () => {
     aiState.responseText = "";
-    aiState.status = "sending";
     aiState.userMessage = inputText;
     aiState.inputText = "";
 
+    aiState.status = "responding";
+    aiState.pendingEmotion = false;
+    aiState.messageTerminated = false;
+
     exchangeChatMessage(
       {
-        onData: (res: AIResponse) => {
-          // console.log(res.answer);
-          aiState.responseText += res.answer;
-          aiState.conversationId = res.conversation_id;
-        },
-        onError: (err: any) => {
-          console.error(err);
-        },
+        onData,
+        onError,
+        onCompleted,
       },
       {
         query: inputText,
@@ -44,25 +110,40 @@ export const AIInput = () => {
         responseMode: "streaming",
       }
     );
+
+    // if (userMessage.includes(`${process.env.NEXT_PUBLIC_SW_NULLOBJECT1}`)) {
+    //   console.log("null object 1");
+    //   aiState.responseText =
+    //     "https://open.spotify.com/track/6CQ6XN8FJ6LIJYqkagBybJ";
+    // }
   };
 
   const handleSendMock = async () => {
     aiState.responseText = "";
-    aiState.status = "sending";
     aiState.userMessage = inputText;
+    const secretHit = inputText.includes(SERET_CODE);
     aiState.inputText = "";
+    // doesnt work
+    // aiState.status = "idle";
     // await new Promise(resolve => setTimeout(resolve, 2000));
+    aiState.status = "responding";
+    await new Promise(resolve => setTimeout(resolve, 2000));
     await fetch("/api/loripsum/3/short/plaintext", {
       method: "GET",
     })
       .then((response: Response) => {
-        aiState.status = "responding";
         return response.text();
       })
       .then((data: string) => {
-        aiState.responseText = data;
+        aiState.responseText = secretHit ? SHE_S_A_RAINBOW : data;
+        aiState.pendingEmotion = true;
+        return new Promise(resolve => setTimeout(resolve, 2000));
+      })
+      .then(() => {
+        const random = Math.floor(Math.random() * 3);
+        aiState.status = ["happy", "sad", "angry"][random];
+        aiState.pendingEmotion = false;
       });
-    aiState.status = "idle";
   };
 
   const startRecording = async () => {
@@ -98,8 +179,6 @@ export const AIInput = () => {
     }
   };
 
-  const isUseInputMethod = useRef(false);
-
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     aiState.inputText = e.target.value;
   };
@@ -107,26 +186,57 @@ export const AIInput = () => {
     if (e.code === "Enter") {
       e.preventDefault();
       // prevent send message when using input method enter
-      if (!e.shiftKey && !isUseInputMethod.current) handleSend();
-    } else {
-      aiState.status = "idle";
+      if (!e.shiftKey && !isUseInputMethod.current && canSend) handleSend();
     }
   };
 
   const handleKeyDown = (e: any) => {
     isUseInputMethod.current = e.nativeEvent.isComposing;
-    aiState.status = "inputing";
     if (e.code === "Enter" && !e.shiftKey) {
       aiState.inputText = aiState.inputText.replace(/\n$/, "");
       e.preventDefault();
     }
   };
 
-  const handleStartNewConversation = () => {
-    aiState.conversationId = "";
-    aiState.inputText = "";
-    aiState.responseText = "";
+  const handleTerminate = async () => {
+    aiState.messageTerminated = true;
+    aiState.userMessage = "";
     aiState.status = "idle";
+  };
+
+  const handleStartNewConversation = async () => {
+    // transcribe the above curl command to js
+    aiState.refreshing = true;
+    await fetch(`/api/dify/v1/conversations/${aiState.conversationId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_DIFY_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user: aiState.user,
+      }),
+    })
+      .then(response => {
+        if (/^2/.test(response.status.toString())) {
+          return Promise.resolve(response);
+        } else {
+          throw new Error("Sorry, an error occurred. Please try again.");
+        }
+      })
+      // .then(data => {
+      //   if (data.result !== "success") {
+      //     throw new Error("Sorry, an error occurred. Please try again.");
+      //   }
+      //   console.log(data);
+      // })
+      .catch(error => {
+        console.error(error);
+        aiState.responseText = error.message;
+        aiState.refreshing = false;
+      });
+
+    resetAIState();
   };
 
   return (

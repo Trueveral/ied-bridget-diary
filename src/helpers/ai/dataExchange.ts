@@ -52,7 +52,6 @@ export const processStream: ProcessMessageFn = (response, callbacks) => {
         if (!message || !message.startsWith("data: ")) continue;
         try {
           bufferObj = JSON.parse(message.substring(6)); // remove data: and parse as json
-          console.log(bufferObj);
         } catch (e) {
           // mute handle message cut off
           continue;
@@ -121,12 +120,8 @@ export const exchangeChatMessage = async (
       }),
     })
     .then(response => {
-      aiState.status = "responding";
       responseMode === "streaming"
         ? processStream(response, callbacks)
         : processBlock(response, callbacks);
-    })
-    .then(() => {
-      aiState.status = "idle";
     });
 };

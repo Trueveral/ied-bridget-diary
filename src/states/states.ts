@@ -23,8 +23,19 @@ export const aiStateSchema = z.object({
   conversationId: z.string(),
   responseText: z.string(),
   userMessage: z.string(),
-  status: z.enum(["idle", "sending", "responding", "inputing"]),
+  status: z.enum([
+    "idle",
+    "responding",
+    "concentrating",
+    "happy",
+    "sad",
+    "angry",
+    "narrative",
+  ]),
+  pendingEmotion: z.boolean(),
   inputText: z.string(),
+  refreshing: z.boolean(),
+  messageTerminated: z.boolean(),
 });
 
 type AiState = z.infer<typeof aiStateSchema>;
@@ -36,4 +47,7 @@ export const aiState: AiState = proxy({
   userMessage: "",
   status: "idle",
   inputText: "",
+  pendingEmotion: false,
+  refreshing: false,
+  messageTerminated: false,
 });

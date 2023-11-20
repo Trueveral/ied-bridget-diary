@@ -3,11 +3,23 @@ import { useTransition, animated, useTrail } from "@react-spring/web";
 import React, { useEffect } from "react";
 import { useSnapshot } from "valtio";
 import s from "./style.module.css";
+import cn from "classnames";
+import { WordMask } from "./mask";
+import { SaveButton } from "./SaveButton";
 
 export const Presentation = () => {
   const { responseText, userMessage } = useSnapshot(aiState);
   const userWords = userMessage.split(" ");
   const responseWords = responseText.split(" ");
+
+  const SERET_CODE = "KeasonAya";
+  const secretHit = userMessage.includes(SERET_CODE);
+
+  const responseTrailsFill = useTrail(responseWords.length, {
+    from: { opacity: 0, x: 20 },
+    to: { opacity: 1, x: 0 },
+    config: { mass: 5, tension: 2000, friction: 200 },
+  });
 
   const responseTrails = useTrail(responseWords.length, {
     from: { opacity: 0, x: 20 },
@@ -42,14 +54,23 @@ export const Presentation = () => {
             </animated.div>
           ))}
         </div>
-        <div className="w-full text-center text-xl text-white flex flex-wrap cursor-default select-none overflow-y-auto max-h-48 overflow-x-hidden">
+        <div
+          className={`${cn(
+            s.presentationArea
+          )} w-full text-center text-xl text-white flex flex-wrap cursor-default select-none overflow-y-auto max-h-48 overflow-x-hidden`}
+        >
           {responseTrails.map((props, index) => (
-            <animated.div key={index} style={props} className={`${s.fadeText}`}>
+            <animated.div
+              key={index}
+              style={props}
+              className={`${s.presentationArea}`}
+            >
               {responseWords[index]}&nbsp;
             </animated.div>
           ))}
         </div>
-        <div className={`${s.fadeText}`}>BVISIONOS0.3</div>
+        {responseText ? <SaveButton /> : null}
+        {/* <div className={`${s.fadeText}`}>BVISIONOS0.3</div> */}
       </div>
     </>
   );

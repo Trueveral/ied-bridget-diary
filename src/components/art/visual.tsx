@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import {
   BakeShadows,
   CameraControls,
@@ -18,6 +18,9 @@ import { Ring } from "./ring";
 import { AnimatedAICubes } from "./animations/ai/box";
 import { useTransition } from "@react-spring/three";
 import { RingArray } from "./animations/ai/ring";
+import { useRef } from "react";
+import { easing } from "maath";
+import { PointLight } from "./pointLight";
 
 export default function Visual() {
   return (
@@ -25,19 +28,14 @@ export default function Visual() {
       <Canvas shadows dpr={[1, 1.5]}>
         {/* <CameraRig /> */}
         <AnimatedAICubes />
-        <pointLight
-          position={[0, 0, 5]}
-          intensity={1000}
-          color="white"
-          distance={1000}
-        />
-        <color attach="background" args={["#1900ff"]} />
+        <PointLight />
+        <color attach="background" args={["#000"]} />
         <group>
           <RingArray number={6} />
           {/* <CrystalArray /> */}
           <Particles count={6000} />
         </group>
-        {/* <PostPro /> */}
+        <PostPro />
         <BakeShadows />
         <SceneManager />
         <Environment preset="warehouse" />
