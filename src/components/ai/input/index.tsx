@@ -19,8 +19,10 @@ import cn from "classnames";
 import s from "./style.module.css";
 import { escape } from "querystring";
 import { generateUUID } from "three/src/math/MathUtils.js";
-import { resetAIState } from "@/helpers/ai/base";
+import { BACKGROUND_INFO_PROMPT, resetAIState } from "@/helpers/ai/base";
 import { useAIActionGuard } from "@/components/hooks/ai";
+import { OpenAI } from "openai";
+import axios from "axios";
 
 const SHE_S_A_RAINBOW =
   "She comes in colours everywhere, She combs her hair, She's like a rainbow, Coming, colours in the air, Oh, everywhere, She comes in colours, She comes in colours everywhere, She combs her hair, She's like a rainbow, Coming, colours in the air, Oh, everywhere, She comes in colours, Have you seen her dressed in blue?, See the sky in front of you, And her face is like a sail, Speck of white so fair and pale, Have you seen a lady fairer?, She comes in colours everywhere, She combs her hair, She's like a rainbow, Coming, colours in the air, Oh, everywhere, She comes in colours, Have you seen her all in gold?, Like a queen in days of old";
@@ -29,7 +31,8 @@ export const SERET_CODE = "KeasonAya";
 
 export const AIInput = () => {
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
-  const { user, conversationId, inputText, userMessage } = useSnapshot(aiState);
+  const { user, conversationId, inputText, userMessage, chatRecords } =
+    useSnapshot(aiState);
   const isUseInputMethod = useRef(false);
   const { canSend } = useAIActionGuard();
 
@@ -45,7 +48,6 @@ export const AIInput = () => {
   };
 
   const onCompleted = async () => {
-    aiState.pendingEmotion = true;
     const { type, ratio } = await globalThis
       .fetch(`${process.env.NEXT_PUBLIC_TWINWORD_API_URL}/sentiment_analyze/`, {
         method: "POST",
@@ -89,6 +91,17 @@ export const AIInput = () => {
   // create a context for inputText
 
   const handleSend = async () => {
+    if (aiState.responseText.length > 0) {
+      aiState.chatRecords.push({
+        role: "user",
+        content: aiState.userMessage,
+      });
+      aiState.chatRecords.push({
+        role: "assistant",
+        content: aiState.responseText,
+      });
+    }
+
     aiState.responseText = "";
     aiState.userMessage = inputText;
     aiState.inputText = "";
@@ -97,53 +110,91 @@ export const AIInput = () => {
     aiState.pendingEmotion = false;
     aiState.messageTerminated = false;
 
-    exchangeChatMessage(
+    // do Open AI.
+
+    const conversationHistory = [
       {
-        onData,
-        onError,
-        onCompleted,
+        role: "system",
+        content: `${BACKGROUND_INFO_PROMPT}`,
       },
+      ...chatRecords,
       {
-        query: inputText,
-        conversationID: conversationId,
-        user: user,
-        responseMode: "streaming",
+        role: "user",
+        content: aiState.userMessage,
+      },
+    ];
+
+    const openAIService = new OpenAI({
+      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+    });
+
+    async function readData() {
+      const completion = await openAIService.chat.completions.create({
+        model: "gpt-3.5-turbo-0613",
+        messages: conversationHistory,
+        stream: true,
+        presence_penalty: 0.6,
+        temperature: 0.6,
+      });
+
+      let buffer = "";
+
+      aiState.status = "responding";
+      aiState.responseCompleted = false;
+
+      for await (const chunk of completion) {
+        const result = chunk.choices[0].delta.content ?? "";
+        aiState.responseText += result;
+        buffer += result;
+        aiState.pendingEmotion = true;
+        await new Promise(resolve => setTimeout(resolve, 50));
       }
-    );
 
-    // if (userMessage.includes(`${process.env.NEXT_PUBLIC_SW_NULLOBJECT1}`)) {
-    //   console.log("null object 1");
-    //   aiState.responseText =
-    //     "https://open.spotify.com/track/6CQ6XN8FJ6LIJYqkagBybJ";
-    // }
+      aiState.responseCompleted = true;
+      await onCompleted();
+      aiState.pendingEmotion = false;
+    }
+
+    readData();
   };
-
   const handleSendMock = async () => {
+    if (aiState.responseText.length > 0) {
+      aiState.chatRecords.push({
+        role: "user",
+        content: aiState.userMessage,
+      });
+      aiState.chatRecords.push({
+        role: "assistant",
+        content: aiState.responseText,
+      });
+    }
+
     aiState.responseText = "";
     aiState.userMessage = inputText;
-    const secretHit = inputText.includes(SERET_CODE);
     aiState.inputText = "";
-    // doesnt work
-    // aiState.status = "idle";
-    // await new Promise(resolve => setTimeout(resolve, 2000));
+
     aiState.status = "responding";
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    await fetch("/api/loripsum/3/short/plaintext", {
-      method: "GET",
-    })
-      .then((response: Response) => {
-        return response.text();
-      })
-      .then((data: string) => {
-        aiState.responseText = secretHit ? SHE_S_A_RAINBOW : data;
-        aiState.pendingEmotion = true;
-        return new Promise(resolve => setTimeout(resolve, 2000));
-      })
-      .then(() => {
-        const random = Math.floor(Math.random() * 3);
-        aiState.status = ["happy", "sad", "angry"][random];
-        aiState.pendingEmotion = false;
-      });
+    aiState.pendingEmotion = false;
+    aiState.messageTerminated = false;
+
+    async function readData() {
+      aiState.status = "responding";
+      aiState.responseCompleted = false;
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      aiState.responseText =
+        "cbewucbewubcewbcewbcejcnjwenchwec ejwcewcwecwecec\
+      cewcewcewhcbewjhbxc hewxnjwebchejwbcejwcw dewbcxgwehvcxbwhejc\
+      dbewhbewhcxewjcewb cbewhbcxwejcwe\
+      dewjhcbewjhbcwehjbchewjbchejwb";
+
+      aiState.responseCompleted = true;
+      aiState.status = "happy";
+      aiState.pendingEmotion = false;
+    }
+
+    readData();
   };
 
   const startRecording = async () => {

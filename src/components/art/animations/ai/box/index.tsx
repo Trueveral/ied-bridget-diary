@@ -115,7 +115,7 @@ const FaceBox = ({ position }) => {
       <meshPhysicalMaterial
         ref={materialRef}
         transparent
-        emissive={"0x0433ff"}
+        emissive={new THREE.Color(0x0433ff)}
         roughness={0}
         metalness={0}
         ior={1.8}

@@ -36,6 +36,8 @@ export const aiStateSchema = z.object({
   inputText: z.string(),
   refreshing: z.boolean(),
   messageTerminated: z.boolean(),
+  chatRecords: z.array(z.any()),
+  responseCompleted: z.boolean(),
 });
 
 type AiState = z.infer<typeof aiStateSchema>;
@@ -50,4 +52,14 @@ export const aiState: AiState = proxy({
   pendingEmotion: false,
   refreshing: false,
   messageTerminated: false,
+  chatRecords: [],
+  responseCompleted: false,
+});
+
+export const chatListState = proxy({
+  showMask: false,
+});
+
+export const diaryState = proxy({
+  savedDiaries: [],
 });

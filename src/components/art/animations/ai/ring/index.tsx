@@ -6,7 +6,7 @@ import { useSnapshot } from "valtio";
 import { useEffect } from "react";
 import { useThree } from "@react-three/fiber";
 
-const SCALE_FACTOR = 0.2;
+const SCALE_FACTOR = 0.4;
 
 export const RingArray = ({ number }: { number: number }) => {
   const { status, pendingEmotion } = useSnapshot(aiState);
@@ -31,11 +31,7 @@ export const RingArray = ({ number }: { number: number }) => {
       showCenter ? 1 : SCALE_FACTOR,
       showCenter ? 1 : SCALE_FACTOR,
     ],
-    position: [
-      showCenter ? 0 : (-width / 800) * 1,
-      showCenter ? 0 : (height / 800) * 1,
-      0,
-    ],
+    position: [0, 0, 0],
     config: {
       mass: 1,
       tension: 1000,
