@@ -1,4 +1,4 @@
-import { aiState } from "@/States/states";
+import { conversationAIState } from "@/States/states";
 import { useSpring, a, to } from "@react-spring/three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
@@ -23,7 +23,7 @@ interface ISpringOptions {
 
 export function calculatePosition(
   index: number,
-  ringState: typeof aiState.status,
+  ringState: typeof conversationAIState.status,
   value: number[] | number[][]
 ) {
   if (value.length === 0) return [];
@@ -40,7 +40,7 @@ export function calculatePosition(
 
 export function createToArray(
   index: number,
-  ringState: typeof aiState.status,
+  ringState: typeof conversationAIState.status,
   springOptions: ISpringOptions
 ) {
   const { fromPosition, toPosition, fromScale, toScale } = springOptions;

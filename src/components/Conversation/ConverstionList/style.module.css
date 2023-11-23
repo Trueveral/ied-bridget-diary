@@ -1,0 +1,10 @@
+.conversationListMask {
+  /* 确保容器大小足够包含文本 */
+  /* background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  ); */
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, black 70%);
+  mask-image: linear-gradient(to left, transparent 0%, black 70%);
+}

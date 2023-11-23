@@ -1,4 +1,4 @@
-import { aiState } from "@/States/states";
+import { conversationAIState } from "@/States/states";
 import { animated, useSpring, useTransition } from "@react-spring/three";
 import { Box } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -8,7 +8,7 @@ import * as THREE from "three";
 import { useSnapshot } from "valtio";
 
 const FaceBox = ({ position }) => {
-  const { status, userMessage } = useSnapshot(aiState);
+  const { status, userMessage } = useSnapshot(conversationAIState);
   const SERET_CODE = "KeasonAya";
   const secretHit = true;
   const showCubes = true;

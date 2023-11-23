@@ -12,7 +12,11 @@ import {
   supabase,
 } from "@/Helpers/AI/base";
 import { useSnapshot } from "valtio";
-import { aiState, chatListState, globalState } from "@/States/states";
+import {
+  conversationAIState,
+  conversationChatListState,
+  globalState,
+} from "@/States/states";
 import { a, useSpring } from "@react-spring/web";
 import { type RealtimeChannel } from "@supabase/supabase-js";
 import { AudioButton, SaveButton } from "./ActionButtons";
@@ -24,7 +28,7 @@ export const ChatList = ({
 }) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const channelRef = useRef<RealtimeChannel | null>(null);
-  const { showMask } = useSnapshot(chatListState);
+  const { showMask } = useSnapshot(conversationChatListState);
   const props = useSpring({
     // height: showMask ? 250 : 0,
     opacity: showMask ? 1 : 0,
@@ -35,13 +39,13 @@ export const ChatList = ({
 
   useEffect(() => {
     const fetchMessages = async () => {
-      if (isFirstMessage || !user.id) return;
+      if (!user.id) return;
       await getMessagesByUserAndConversationId(
         user.id!!,
         conversationId!!
       ).then(data => {
-        console.log(user.id);
-        console.log(data);
+        if (data.messages === null) return;
+        console.log(data.messages);
         setMessages(data.messages!!);
       });
     };
@@ -70,12 +74,12 @@ export const ChatList = ({
   // IE. It forces the messages to be saved in pairs
   return (
     <div
-      className={`${s.chatListMask} flex flex-col overflow-y-auto h-3/5 gap-2 pt-24 pb-96 z-20`}
+      className={`${s.chatListMask} flex flex-col overflow-y-auto h-full gap-2 pt-24 pb-96 z-20`}
       onMouseEnter={() => {
-        chatListState.showMask = true;
+        conversationChatListState.showMask = true;
       }}
       onMouseLeave={() => {
-        chatListState.showMask = false;
+        conversationChatListState.showMask = false;
       }}
     >
       {messages.map((v, i) => {

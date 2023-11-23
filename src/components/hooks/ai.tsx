@@ -1,13 +1,17 @@
 import { springOptions } from "@/Helpers/AI/ringOptions";
 import { calculatePosition, createToArray } from "@/Helpers/AI/ringAnimation";
-import { aiState, chatListState, globalState } from "@/States/states";
+import {
+  conversationAIState,
+  conversationChatListState,
+  globalState,
+} from "@/States/states";
 import { useSpring } from "@react-spring/three";
 import { use, useEffect } from "react";
 import { useSnapshot } from "valtio";
 import { useRouter } from "next/router";
 
 export const useAIActionGuard = () => {
-  const { status, inputText, refreshing } = useSnapshot(aiState);
+  const { status, inputText, refreshing } = useSnapshot(conversationAIState);
 
   const obj = {
     canSend: false,
@@ -24,7 +28,7 @@ export const useAIActionGuard = () => {
 };
 
 export const useRingAnimation = (index: number, useLog: false) => {
-  const { status: ringState } = useSnapshot(aiState);
+  const { status: ringState } = useSnapshot(conversationAIState);
   const springDelay = springOptions[ringState].delay * index;
   const springReset = springOptions[ringState].reset;
   const springFromPosition = springOptions[ringState].fromPosition;

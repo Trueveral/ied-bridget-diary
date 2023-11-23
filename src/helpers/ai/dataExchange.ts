@@ -1,4 +1,7 @@
-import { aiState, chatListState } from "@/States/states";
+import {
+  conversationAIState,
+  conversationChatListState,
+} from "@/States/states";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { openAIService } from "./base";
@@ -144,21 +147,21 @@ export function processOpenAIChatCompletion(conversationHistory: any[]) {
 
     const messageObj: MessageType = {
       id: "",
-      user_id: aiState.user,
+      user_id: conversationAIState.user,
       text: "",
       role: "assistant",
       timestamp: 0,
     };
 
-    aiState.status = "responding";
-    aiState.responseCompleted = false;
-    aiState.pendingEmotion = true;
-    chatListState.abortController = completion.controller;
+    conversationAIState.status = "responding";
+    conversationAIState.responseCompleted = false;
+    conversationAIState.pendingEmotion = true;
+    conversationChatListState.abortController = completion.controller;
 
     for await (const chunk of completion) {
       const result = chunk.choices[0].delta.content ?? "";
 
-      aiState.responseText += result;
+      conversationAIState.responseText += result;
 
       messageObj.id = chunk.id;
       messageObj.timestamp = chunk.created;
@@ -181,7 +184,7 @@ export function processOpenAIChatCompletion(conversationHistory: any[]) {
 }
 
 export async function getEmotion() {
-  aiState.pendingEmotion = true;
+  conversationAIState.pendingEmotion = true;
   const { type, ratio } = await globalThis
     .fetch(`${process.env.NEXT_PUBLIC_TWINWORD_API_URL}/sentiment_analyze/`, {
       method: "POST",
@@ -191,7 +194,7 @@ export async function getEmotion() {
         "content-type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        text: aiState.responseText,
+        text: conversationAIState.responseText,
       }),
     })
     .then(response => {
@@ -206,19 +209,19 @@ export async function getEmotion() {
       };
     });
 
-  aiState.pendingEmotion = false;
+  conversationAIState.pendingEmotion = false;
 
   if (ratio < 0.2) {
-    aiState.status = "narrative";
+    conversationAIState.status = "narrative";
   } else {
     if (type === "positive") {
-      aiState.status = "happy";
+      conversationAIState.status = "happy";
     }
     if (type === "negative") {
       if (ratio > 0.6) {
-        aiState.status = "angry";
+        conversationAIState.status = "angry";
       } else {
-        aiState.status = "sad";
+        conversationAIState.status = "sad";
       }
     }
   }

@@ -1,7 +1,7 @@
 import { Float } from "@react-three/drei";
 import { RingIndicator } from "./temp";
 import { a, useSpring } from "@react-spring/three";
-import { aiState, globalState } from "@/States/states";
+import { conversationAIState, globalState } from "@/States/states";
 import { useSnapshot } from "valtio";
 import { useEffect } from "react";
 import { useThree } from "@react-three/fiber";
@@ -9,7 +9,7 @@ import { useThree } from "@react-three/fiber";
 const SCALE_FACTOR = 0.4;
 
 export const RingArray = ({ number }: { number: number }) => {
-  const { status, pendingEmotion } = useSnapshot(aiState);
+  const { status, pendingEmotion } = useSnapshot(conversationAIState);
   const { link } = useSnapshot(globalState);
   const {
     size: { width, height },

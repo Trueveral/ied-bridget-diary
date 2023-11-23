@@ -36,11 +36,17 @@ export const aiStateSchema = z.object({
   refreshing: z.boolean(),
   messageTerminated: z.boolean(),
   responseCompleted: z.boolean(),
+  abortController: z.union([z.null(), z.instanceof(AbortController)]),
 });
 
-type AiState = z.infer<typeof aiStateSchema>;
+type ConversationAIStateType = z.infer<typeof aiStateSchema>;
+type ConversationChatListStateType = {
+  showMask: boolean;
+  contentPS: { width: number; height: number; x: number; y: number };
+  abortController: AbortController | null;
+};
 
-export const aiState: AiState = proxy({
+export const conversationAIState: ConversationAIStateType = proxy({
   responseText: "",
   userMessage: "",
   status: "idle",
@@ -49,15 +55,10 @@ export const aiState: AiState = proxy({
   refreshing: false,
   messageTerminated: false,
   responseCompleted: false,
+  abortController: null,
 });
 
-type ChatListStateType = {
-  showMask: boolean;
-  contentPS: { width: number; height: number; x: number; y: number };
-  abortController: AbortController | null;
-};
-
-export const chatListState: ChatListStateType = proxy({
+export const conversationChatListState: ConversationChatListStateType = proxy({
   showMask: false,
   abortController: null,
   contentPS: {
@@ -65,6 +66,31 @@ export const chatListState: ChatListStateType = proxy({
     height: 0,
     x: 0,
     y: 0,
+  },
+});
+
+export const AIState = proxy({
+  "": {
+    conversationAIState: {
+      responseText: "",
+      userMessage: "",
+      status: "idle",
+      inputText: "",
+      pendingEmotion: false,
+      refreshing: false,
+      messageTerminated: false,
+      responseCompleted: false,
+    },
+    conversationChatListState: {
+      showMask: false,
+      abortController: null,
+      contentPS: {
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
+      },
+    },
   },
 });
 

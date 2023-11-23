@@ -1,4 +1,4 @@
-import { aiState } from "@/States/states";
+import { conversationAIState } from "@/States/states";
 import { useSpring, a, to } from "@react-spring/three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
@@ -15,7 +15,7 @@ export const RingIndicator = ({ index }: { index: number }) => {
   const ringRef = useRef<THREE.RingGeometry>();
   const meshRef = useRef<THREE.Mesh>();
   const materialRef = useRef<THREE.MeshBasicMaterial>();
-  let { status: ringState } = useSnapshot(aiState);
+  let { status: ringState } = useSnapshot(conversationAIState);
 
   const {
     size: { width, height },

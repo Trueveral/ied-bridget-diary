@@ -1,5 +1,8 @@
 "use client";
-import { aiState, chatListState } from "@/States/states";
+import {
+  conversationAIState,
+  conversationChatListState,
+} from "@/States/states";
 import { useSnapshot } from "valtio";
 import cn from "classnames";
 import s from "../style.module.css";
@@ -7,9 +10,9 @@ import { a, useSpring } from "@react-spring/web";
 
 export const AnimatedChatComponent = () => {
   const { responseCompleted, messageTerminated, responseText, userMessage } =
-    useSnapshot(aiState);
+    useSnapshot(conversationAIState);
 
-  const { showMask } = useSnapshot(chatListState);
+  const { showMask } = useSnapshot(conversationChatListState);
 
   const springProps = useSpring({
     opacity: showMask ? 0 : 1,

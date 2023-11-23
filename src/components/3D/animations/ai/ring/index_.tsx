@@ -2,7 +2,7 @@ import { useSnapshot } from "valtio";
 import { animated, useSpring, a, useSpringValue } from "@react-spring/three";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { aiState, interactionState } from "@/States/states";
+import { conversationAIState, interactionState } from "@/States/states";
 import { useEffect, useRef, useState } from "react";
 import { easing } from "maath";
 import * as geometry from "maath/geometry";
@@ -53,7 +53,7 @@ const ThinkingRing = ({
   const ringRef = useRef<THREE.Mesh>();
   const meshRef = useRef<THREE.Mesh>();
   const materialRef = useRef<THREE.MeshBasicMaterial>();
-  const { status, responseText } = useSnapshot(aiState);
+  const { status, responseText } = useSnapshot(conversationAIState);
 
   const {
     size: { width, height },
@@ -101,7 +101,7 @@ const AngryRing = ({ index }: { index: number }) => {
   const ringRef = useRef<THREE.RingGeometry>();
   const meshRef = useRef<THREE.Mesh>();
   const materialRef = useRef<THREE.MeshBasicMaterial>();
-  const { status, responseText } = useSnapshot(aiState);
+  const { status, responseText } = useSnapshot(conversationAIState);
   const {
     size: { width, height },
     clock,
@@ -140,7 +140,7 @@ const SadRing = ({ index }: { index: number }) => {
   const ringRef = useRef<THREE.RingGeometry>();
   const meshRef = useRef<THREE.Mesh>();
   const materialRef = useRef<THREE.MeshBasicMaterial>();
-  const { status, responseText } = useSnapshot(aiState);
+  const { status, responseText } = useSnapshot(conversationAIState);
 
   const {
     size: { width, height },
@@ -184,7 +184,7 @@ const HappyRing = ({ index }: { index: number }) => {
   const ringRef = useRef<THREE.RingGeometry>();
   const meshRef = useRef<THREE.Mesh>();
   const materialRef = useRef<THREE.MeshBasicMaterial>();
-  const { status, responseText } = useSnapshot(aiState);
+  const { status, responseText } = useSnapshot(conversationAIState);
 
   const {
     size: { width, height },
@@ -230,7 +230,7 @@ const NarrativeRing = ({ index }: { index: number }) => {
   const ringRef = useRef<THREE.RingGeometry>();
   const meshRef = useRef<THREE.Mesh>();
   const materialRef = useRef<THREE.MeshBasicMaterial>();
-  const { status, responseText } = useSnapshot(aiState);
+  const { status, responseText } = useSnapshot(conversationAIState);
 
   const {
     size: { width, height },
@@ -275,7 +275,7 @@ const ConcentratedRing = ({ index }: { index: number }) => {
   const ringRef = useRef<THREE.RingGeometry>();
   const meshRef = useRef<THREE.Mesh>();
   const materialRef = useRef<THREE.MeshBasicMaterial>();
-  const { status, responseText } = useSnapshot(aiState);
+  const { status, responseText } = useSnapshot(conversationAIState);
 
   const {
     size: { width, height },
@@ -288,7 +288,10 @@ const ConcentratedRing = ({ index }: { index: number }) => {
     loop: true,
     from: { position: [0, 0, 0], scale: 0.8 },
     to: [
-      { position: [0, 0, 0], scale: aiState.status === "idle" ? 2 : 1 },
+      {
+        position: [0, 0, 0],
+        scale: conversationAIState.status === "idle" ? 2 : 1,
+      },
       { position: [0, 0, 0], scale: 0.8 },
     ],
     config: { tension: 200, friction: 14, duration: 700 },

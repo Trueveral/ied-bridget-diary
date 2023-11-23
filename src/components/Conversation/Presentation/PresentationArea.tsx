@@ -1,5 +1,8 @@
 "use client";
-import { aiState, chatListState } from "@/States/states";
+import {
+  conversationAIState,
+  conversationChatListState,
+} from "@/States/states";
 import React, { useEffect } from "react";
 import { useSnapshot } from "valtio";
 
@@ -8,11 +11,12 @@ export const PresentationArea = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { responseText, userMessage, responseCompleted } = useSnapshot(aiState);
+  const { responseText, userMessage, responseCompleted } =
+    useSnapshot(conversationAIState);
 
   const contentRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {
-    chatListState.contentPS = {
+    conversationChatListState.contentPS = {
       width: contentRef.current?.offsetWidth ?? 0,
       height: contentRef.current?.offsetHeight ?? 0,
       x: contentRef.current?.offsetLeft ?? 0,

@@ -3,13 +3,16 @@ import { a, useSpring } from "@react-spring/web";
 import s from "./style.module.css";
 import cn from "classnames";
 import { useSnapshot } from "valtio";
-import { aiState, chatListState } from "@/States/states";
+import {
+  conversationAIState,
+  conversationChatListState,
+} from "@/States/states";
 
 export const BackgroundMask = () => {
   const {
     showMask,
     contentPS: { height, width, x, y },
-  } = useSnapshot(chatListState);
+  } = useSnapshot(conversationChatListState);
 
   const props = useSpring({
     opacity: showMask ? 1 : 0,
@@ -19,7 +22,7 @@ export const BackgroundMask = () => {
   });
 
   return (
-    <div className="blur-2xl fixed -z-10 w-screen h-screen">
+    <div className="blur-2xl fixed -z-10 w-screen h-4/5">
       <a.div
         className={`backdrop-blur-2xl bg-black/30 h-full w-full`}
         style={props}

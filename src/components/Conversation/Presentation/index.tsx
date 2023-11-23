@@ -1,8 +1,8 @@
 "use server";
 import { BackgroundMask } from "./BackgroundMask";
-import { AnimatedChatComponent } from "./ChatList/AnimatedChatComponent";
+import { AnimatedChatComponent } from "./MessageList/AnimatedChatComponent";
 import React, { use } from "react";
-import { ChatList } from "./ChatList/ChatList";
+import { ChatList } from "./MessageList";
 import { PresentationArea } from "./PresentationArea";
 
 export const Presentation = async () => {
@@ -13,7 +13,7 @@ export const Presentation = async () => {
       </div> */}
       <PresentationArea>
         <div>
-          <div className="h-3/5 mt-20 justify-end items-end">
+          <div className="h-4/5 mt-20 justify-end items-end">
             <ChatList initialMessages={[]} />
           </div>
           <div className="h-2/5">

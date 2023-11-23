@@ -1,4 +1,4 @@
-import { aiState, globalState } from "@/States/states";
+import { conversationAIState, globalState } from "@/States/states";
 import { generateUUID } from "three/src/math/MathUtils.js";
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
@@ -13,14 +13,14 @@ export const openAIService = new OpenAI({
 });
 
 export const resetAIState = () => {
-  aiState.responseText = "";
-  aiState.userMessage = "";
-  aiState.status = "idle";
-  aiState.inputText = "";
-  aiState.pendingEmotion = false;
-  aiState.refreshing = false;
-  aiState.messageTerminated = false;
-  aiState.responseCompleted = false;
+  conversationAIState.responseText = "";
+  conversationAIState.userMessage = "";
+  conversationAIState.status = "idle";
+  conversationAIState.inputText = "";
+  conversationAIState.pendingEmotion = false;
+  conversationAIState.refreshing = false;
+  conversationAIState.messageTerminated = false;
+  conversationAIState.responseCompleted = false;
   globalState.isFirstMessage = true;
   globalState.conversationId = undefined;
 };
@@ -30,12 +30,13 @@ export const prepareAIForSending = (
   inputText: string,
   chatRecords: readonly any[]
 ) => {
-  aiState.messageTerminated = false;
-  aiState.responseText = "";
-  aiState.userMessage = inputText;
-  aiState.inputText = "";
-  aiState.status = "responding";
-  aiState.pendingEmotion = false;
+  conversationAIState.messageTerminated = false;
+  conversationAIState.responseText = "";
+  conversationAIState.userMessage = inputText;
+  conversationAIState.inputText = "";
+  conversationAIState.status = "responding";
+  conversationAIState.pendingEmotion = false;
+  conversationAIState.responseCompleted = false;
   // aiState.messageTerminated = false;
 
   const conversationHistory = [
@@ -46,7 +47,7 @@ export const prepareAIForSending = (
     ...chatRecords,
     {
       role: "user",
-      content: aiState.userMessage,
+      content: conversationAIState.userMessage,
     },
   ];
 
@@ -78,6 +79,22 @@ export async function getMessagesByUserAndConversationId(
     .select("*")
     .eq("user_id", userId)
     .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: false });
+  return {
+    messages,
+    error,
+  };
+}
+
+export async function getMessagesByUserAndConversationIds(
+  userId: string,
+  conversationId: string[]
+) {
+  const { data: messages, error } = await supabase
+    .from("Message")
+    .select("*")
+    .eq("user_id", userId)
+    .in("conversation_id", conversationId)
     .order("id", { ascending: false });
   return {
     messages,
@@ -100,6 +117,47 @@ export async function getSavedDiariesByUser(userId: string, limit?: number) {
   };
 }
 
+export async function getUsersListByName(
+  name: string,
+  conversationPreview: boolean
+) {
+  const { data, error } = await supabase
+    .from("User")
+    .select("*")
+    .ilike("username", `%${name}%`)
+    .limit(10);
+
+  if (conversationPreview) {
+    const users = data.map((user: any) => user.id);
+    const messages = await supabase
+      .from("Message")
+      .select("*")
+      .in("user_id", users)
+      .order("id", { ascending: true })
+      .limit(2);
+
+    const result = data.map((user: any) => {
+      const userMessages = messages.data.filter(
+        (message: any) => message.user_id === user.id
+      );
+      return {
+        user,
+        latestMessage: userMessages,
+      };
+    });
+
+    return {
+      data: result,
+      error,
+    };
+  }
+
+  return {
+    data,
+    error,
+  };
+}
+
 export async function getSavedDiaries(limit?: number) {
   const { data, error } = await supabase
     .from("Message")
@@ -108,6 +166,36 @@ export async function getSavedDiaries(limit?: number) {
     .order("User (username)", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(limit || 300);
+
+  return {
+    data,
+    error,
+  };
+}
+
+export async function getConversationsByUser(userId: string) {
+  const { data, error } = await supabase
+    .from("Conversation")
+    .select("*")
+    .eq("user_id", userId)
+    .order("id", { ascending: false });
+
+  console.log(data, error);
+
+  return {
+    data,
+    error,
+  };
+}
+
+export async function renameConversation(
+  conversationId: string,
+  newName: string
+) {
+  const { data, error } = await supabase
+    .from("Conversation")
+    .update({ name: newName })
+    .eq("id", conversationId);
 
   return {
     data,

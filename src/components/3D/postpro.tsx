@@ -8,13 +8,13 @@ import {
   SMAA,
 } from "@react-three/postprocessing";
 import React from "react";
-import { interactionState, aiState } from "@/States/states";
+import { interactionState, conversationAIState } from "@/States/states";
 
 const SERET_CODE = "KeasonAya";
 
 export const PostPro = () => {
   const { hoverId, activeId } = useSnapshot(interactionState);
-  const { userMessage } = useSnapshot(aiState);
+  const { userMessage } = useSnapshot(conversationAIState);
   const secretHit = userMessage.includes(SERET_CODE);
   const AnimatedBrightnessContrast = animated(BrightnessContrast);
   const AnimatedBloom = animated(Bloom);

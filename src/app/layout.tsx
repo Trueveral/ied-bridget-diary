@@ -7,9 +7,8 @@ export const metadata: Metadata = {
   title: "Bridget's Diary",
   description: "See the diary from a cyropreserved brain. 57 years from now.",
 };
-import { UserProvider } from "@/components/Hooks/base";
 import { NewProfileButton } from "@/components/Global/Profile";
-import Visual from "@/components/Art/visual";
+import Visual from "@/components/3D/visual";
 import DiaryBGMask from "@/components/Global/Mask/DiaryBGMask";
 
 export default function RootLayout({

@@ -1,7 +1,7 @@
 "use client";
 import { ChangeEvent, useRef } from "react";
 import { useSnapshot } from "valtio";
-import { aiState, globalState } from "@/States/states";
+import { AIState, conversationAIState, globalState } from "@/States/states";
 import { getEmotion } from "@/Helpers/AI/dataExchange";
 import {
   RecordButton,
@@ -24,11 +24,13 @@ import { useAIActionGuard } from "@/components/Hooks/ai";
 import { MessageType } from "@/components/Hooks/base";
 
 export const AIInput = () => {
-  const { inputText, messageTerminated } = useSnapshot(aiState);
+  const { inputText, messageTerminated } = useSnapshot(conversationAIState);
   const abortController = useRef<AbortController | null>(null);
   const isUseInputMethod = useRef(false);
   const { canSend } = useAIActionGuard();
   const { user, conversationId, isFirstMessage } = useSnapshot(globalState);
+  const { abortController: stateAbortController } =
+    useSnapshot(conversationAIState);
 
   async function readData(conversationHistory: any[]) {
     const completion = await openAIService.chat.completions.create({
@@ -47,15 +49,16 @@ export const AIInput = () => {
       timestamp: 0,
     };
 
-    aiState.status = "responding";
-    aiState.responseCompleted = false;
-    aiState.pendingEmotion = true;
+    conversationAIState.status = "responding";
+    conversationAIState.responseCompleted = false;
+    conversationAIState.pendingEmotion = true;
     abortController.current = completion.controller;
+    conversationAIState.abortController = completion.controller;
 
     for await (const chunk of completion) {
       const result = chunk.choices[0].delta.content ?? "";
 
-      aiState.responseText += result;
+      conversationAIState.responseText += result;
 
       messageObj.gpt_id = chunk.id;
       messageObj.timestamp = chunk.created;
@@ -101,24 +104,24 @@ export const AIInput = () => {
         let finishType = "";
         switch (data?.finishReason) {
           case "stop" || "length":
-            aiState.responseCompleted = true;
-            aiState.pendingEmotion = false;
+            conversationAIState.responseCompleted = true;
+            conversationAIState.pendingEmotion = false;
             finishType = "emotion";
             break;
           case "content_filter":
-            aiState.responseCompleted = true;
-            aiState.responseText = "Don't say bad words!";
-            aiState.status = "angry";
-            aiState.pendingEmotion = false;
+            conversationAIState.responseCompleted = true;
+            conversationAIState.responseText = "Don't say bad words!";
+            conversationAIState.status = "angry";
+            conversationAIState.pendingEmotion = false;
             finishType = "final";
             break;
           default:
             console.error(data?.finishReason);
-            aiState.responseText = "";
-            aiState.userMessage = "";
-            aiState.status = "idle";
-            aiState.responseCompleted = true;
-            aiState.pendingEmotion = false;
+            conversationAIState.responseText = "";
+            conversationAIState.userMessage = "";
+            conversationAIState.status = "idle";
+            conversationAIState.responseCompleted = true;
+            conversationAIState.pendingEmotion = false;
             finishType = "final";
             break;
         }
@@ -130,57 +133,46 @@ export const AIInput = () => {
       .then(async data => {
         if (data.finishType === "emotion") {
           if (data.messageObj) {
-            let insertBody;
-            if (isFirstMessage) {
-              insertBody = [
-                {
-                  gpt_id: data.messageObj.gpt_id,
-                  user_id: user.id!!,
-                  text: data.messageObj.text,
-                  role: "assistant",
-                },
-              ];
-            } else {
-              insertBody = [
-                {
-                  gpt_id: data.messageObj.gpt_id,
-                  user_id: user.id!!,
-                  text: data.messageObj.text,
-                  role: "assistant",
-                  conversation_id: conversationId,
-                },
-              ];
-            }
-            const { data: message, error } = await supabase
-              .from("Message")
-              .insert(insertBody)
-              .select();
+            const insertingConversationID = isFirstMessage
+              ? await supabase
+                  .from("Conversation")
+                  .insert([{ user_id: user.id!! }])
+                  .select()
+                  .then(data => {
+                    if (data.error) {
+                      console.error(data.error);
+                      return;
+                    }
+                    return data.data?.[0].id;
+                  })
+              : conversationId;
 
-            if (isFirstMessage) {
-              const generatedConversationId = message?.[0].conversation_id;
+            if (!insertingConversationID) {
+              console.error("insertingConversationID is null");
+              return;
+            }
+
+            const roles = ["assistant", "user"];
+            for (const role of roles) {
               await supabase.from("Message").insert([
                 {
-                  gpt_id: "user_" + data.messageObj.gpt_id,
-                  user_id: user.id!!,
-                  text: aiState.userMessage,
-                  role: "user",
-                  conversation_id: generatedConversationId,
-                },
-              ]);
-            } else {
-              await supabase.from("Message").insert([
-                {
-                  gpt_id: "user_" + data.messageObj.gpt_id,
-                  user_id: user.id!!,
-                  text: aiState.userMessage,
-                  role: "user",
-                  conversation_id: conversationId,
+                  gpt_id:
+                    role === "assistant"
+                      ? data.messageObj?.gpt_id
+                      : "user_" + data.messageObj?.gpt_id,
+                  user_id: user.id,
+                  text:
+                    role === "assistant"
+                      ? data.messageObj?.text
+                      : conversationAIState.userMessage,
+                  role: role,
+                  conversation_id: insertingConversationID,
                 },
               ]);
             }
 
             globalState.isFirstMessage = false;
-            globalState.conversationId = message?.[0].conversation_id;
+            globalState.conversationId = insertingConversationID;
 
             await getEmotion();
           }
@@ -192,7 +184,7 @@ export const AIInput = () => {
   };
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    aiState.inputText = e.target.value;
+    conversationAIState.inputText = e.target.value;
   };
 
   const handleKeyUp = (e: any) => {
@@ -206,26 +198,31 @@ export const AIInput = () => {
   const handleKeyDown = (e: any) => {
     isUseInputMethod.current = e.nativeEvent.isComposing;
     if (e.code === "Enter" && !e.shiftKey) {
-      aiState.inputText = aiState.inputText.replace(/\n$/, "");
+      conversationAIState.inputText = conversationAIState.inputText.replace(
+        /\n$/,
+        ""
+      );
       e.preventDefault();
     }
   };
 
-  const handleTerminate = async () => {
-    abortController.current?.abort();
-    aiState.messageTerminated = true;
-    aiState.responseText = "";
-    aiState.userMessage = "";
-    aiState.status = "idle";
-    aiState.responseCompleted = true;
-    aiState.pendingEmotion = false;
+  const handleTerminate = async (controller: any) => {
+    controller.abort();
+    conversationAIState.messageTerminated = true;
+    conversationAIState.responseText = "";
+    conversationAIState.userMessage = "";
+    conversationAIState.status = "idle";
+    conversationAIState.responseCompleted = true;
+    conversationAIState.pendingEmotion = false;
   };
 
   const handleStartNewConversation = async () => {
     // transcribe the above curl command to js
-    aiState.refreshing = true;
+    conversationAIState.refreshing = true;
     resetAIState();
-    // await supabase.from("Message").delete().eq("user_id", user.id!!);
+    // create new conversation
+
+    conversationAIState.refreshing = false;
   };
 
   return (
@@ -244,7 +241,11 @@ export const AIInput = () => {
       <div className="flex flex-row flex-wrap min-w-max gap-2">
         <SendButton onSendCallback={handleSend} />
         <RecordButton onSendCallback={handleSend} />
-        <TerminateButton onTerminateCallback={handleTerminate} />
+        <TerminateButton
+          onTerminateCallback={() => {
+            handleTerminate(stateAbortController);
+          }}
+        />
         <StartNewConversationButton
           onClickCallback={handleStartNewConversation}
         />
