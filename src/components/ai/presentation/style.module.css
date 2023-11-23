@@ -50,8 +50,10 @@
     linear-gradient(to right, black 50%, transparent 100%);
   mask-image: linear-gradient(to left, black 50%, transparent 100%),
     linear-gradient(to right, black 50%, transparent 100%);
-  -webkit-backdrop-filter: blur(100px);
-  backdrop-filter: blur(100px);
+  /* -webkit-backdrop-filter: blur(100px); */
+  /* backdrop-filter: blur(100px); */
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(30px);
 }
 
 .chatListMask {
@@ -61,8 +63,18 @@
     rgba(255, 255, 255, 0.1) 50%,
     rgba(255, 255, 255, 0) 100%
   ); */
-  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(
+    to top,
+    transparent 20%,
+    black 80%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to top,
+    transparent 20%,
+    black 80%,
+    transparent 100%
+  );
 }
 
 .chatComponentMask {
@@ -72,6 +84,6 @@
     rgba(255, 255, 255, 0.1) 50%,
     rgba(255, 255, 255, 0) 100%
   ); */
-  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+  mask-image: linear-gradient(to top, black 50%, transparent 100%);
 }

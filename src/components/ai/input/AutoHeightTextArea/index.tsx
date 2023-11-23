@@ -1,6 +1,7 @@
+"use client";
 import { forwardRef, useEffect, useRef } from "react";
 import cn from "classnames";
-import { aiState } from "@/states/states";
+import { aiState } from "@/States/states";
 
 type IProps = {
   placeholder?: string;

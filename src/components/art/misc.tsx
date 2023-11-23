@@ -15,7 +15,7 @@ import {
 import { animated, easings, useSpring } from "@react-spring/three";
 import React from "react";
 import { easing } from "maath";
-import { interactionState } from "@/states/states";
+import { interactionState } from "@/States/states";
 
 export const FaceBox = ({ position }) => {
   const boxRef = useRef();

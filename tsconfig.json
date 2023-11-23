@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "!/*": ["./public/*"]
     }
   },
   "include": [
@@ -27,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/helpers/ai.ys"
+    "src/Helpers/ai.ys"
   ],
   "exclude": ["node_modules"]
 }

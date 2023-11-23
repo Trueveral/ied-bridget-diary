@@ -5,8 +5,8 @@ import { useFrame } from "@react-three/fiber";
 import { useSnapshot } from "valtio";
 import { easing } from "maath";
 import React from "react";
-import { useParticles } from "../hooks/vfx";
-import { interactionState } from "@/states/states";
+import { useParticles } from "../Hooks/vfx";
+import { interactionState } from "@/States/states";
 
 // ref: this code is largely based on: https://codesandbox.io/s/qpfgyp
 

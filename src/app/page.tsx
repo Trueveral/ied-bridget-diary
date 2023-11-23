@@ -1,14 +1,9 @@
-import Visual from "@/components/art/visual";
-import { AI } from "@/components/ai/main";
+import Visual from "@/components/Art/visual";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  return (
-    <>
-      <div className="w-screen h-screen">
-        <Visual />
-        {/* <Overlay /> */}
-      </div>
-      <AI />
-    </>
-  );
+import { Navigator } from "@/components/Global/Navigator";
+import { GetServerSideProps } from "next";
+
+export default async function Page() {
+  redirect("/conversation");
 }

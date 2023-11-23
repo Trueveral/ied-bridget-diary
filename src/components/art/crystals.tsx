@@ -17,9 +17,9 @@ import {
   useCrystalTextNodes,
   useCrystalTitles,
   useText,
-} from "../hooks/crystal";
+} from "../Hooks/crystal";
 import { CrystalMaterial } from "./materials";
-import { countSate, interactionState } from "@/states/states";
+import { countSate, interactionState } from "@/States/states";
 // import { z } from "zod";
 
 const Crystal = ({
@@ -156,7 +156,7 @@ export const CrystalArray = () => {
     const temp = [];
     for (let i = 0; i < count; i++) {
       const offset = i - count / 2;
-      const position = [offset * 6 + Math.random(), 6 * Math.sin(i), 0];
+      const position = [offset * 6 + Math.random(), 6 * Math.sin(i), -40];
       const scale = [1, 1, 1];
       const rotation = [0, 0, 0];
       temp.push({ position, scale, rotation });

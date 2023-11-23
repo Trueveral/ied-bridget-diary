@@ -2,7 +2,7 @@ import { useSnapshot } from "valtio";
 import { animated, useSpring, a, useSpringValue } from "@react-spring/three";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { aiState, interactionState } from "@/states/states";
+import { aiState, interactionState } from "@/States/states";
 import { useEffect, useRef, useState } from "react";
 import { easing } from "maath";
 import * as geometry from "maath/geometry";

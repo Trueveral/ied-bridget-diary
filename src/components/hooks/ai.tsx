@@ -1,13 +1,13 @@
-import { springOptions } from "@/helpers/ai/ringOptions";
-import { calculatePosition, createToArray } from "@/helpers/ai/ringAnimation";
-import { aiState } from "@/states/states";
+import { springOptions } from "@/Helpers/AI/ringOptions";
+import { calculatePosition, createToArray } from "@/Helpers/AI/ringAnimation";
+import { aiState, chatListState, globalState } from "@/States/states";
 import { useSpring } from "@react-spring/three";
 import { use, useEffect } from "react";
 import { useSnapshot } from "valtio";
+import { useRouter } from "next/router";
 
 export const useAIActionGuard = () => {
-  const { status, inputText, conversationId, refreshing } =
-    useSnapshot(aiState);
+  const { status, inputText, refreshing } = useSnapshot(aiState);
 
   const obj = {
     canSend: false,
@@ -16,54 +16,11 @@ export const useAIActionGuard = () => {
   };
 
   if (refreshing) return obj;
-  obj.canStartNew = conversationId !== "";
+  obj.canStartNew = status !== "responding";
   obj.canSend = inputText !== "";
   obj.canTerminate = status === "responding";
 
   return obj;
-};
-
-export const useStreamReader = (response: Response) => {
-  if (!response.ok) {
-    console.error(response);
-    return;
-  }
-
-  const reader = response.body!!.getReader();
-  let decoder = new TextDecoder("utf-8");
-  let data = "";
-  let buffer = [];
-  let bufferObj: any;
-
-  const read = () => {
-    reader.read().then(({ done, value }) => {
-      if (done) {
-        console.log("Stream complete");
-        return;
-      }
-      const lines = data.split("\n");
-      try {
-        lines.forEach(line => {
-          if (!line || !line.startsWith("data:")) return;
-          try {
-            bufferObj = JSON.parse(line.substring(6));
-            aiState.conversationId = bufferObj.id;
-            console.log(bufferObj);
-          } catch (e) {
-            console.error(e);
-            return;
-          }
-          if (bufferObj.event !== "message") return;
-        });
-      } catch (e) {
-        console.error(e);
-        return;
-      }
-      // Continue reading
-      read();
-    });
-  };
-  read();
 };
 
 export const useRingAnimation = (index: number, useLog: false) => {
@@ -83,8 +40,7 @@ export const useRingAnimation = (index: number, useLog: false) => {
 
   const { position, scale } = useSpring({
     delay: springDelay,
-    reset: springReset,
-    loop: false,
+    reverse: true,
     from: {
       position: calculatePosition(index, ringState, springFromPosition),
       scale: springFromScale,

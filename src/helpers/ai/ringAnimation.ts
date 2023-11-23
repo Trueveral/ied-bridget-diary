@@ -1,4 +1,4 @@
-import { aiState } from "@/states/states";
+import { aiState } from "@/States/states";
 import { useSpring, a, to } from "@react-spring/three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";

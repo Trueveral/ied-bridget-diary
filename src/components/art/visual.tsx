@@ -21,14 +21,16 @@ import { RingArray } from "./animations/ai/ring";
 import { useRef } from "react";
 import { easing } from "maath";
 import { PointLight } from "./pointLight";
+import { CollectionsScene } from "./Collections";
 
 export default function Visual() {
   return (
     <>
       <Canvas shadows dpr={[1, 1.5]}>
-        {/* <CameraRig /> */}
+        <CameraRig />
         <AnimatedAICubes />
         <PointLight />
+        <CollectionsScene />
         <color attach="background" args={["#000"]} />
         <group>
           <RingArray number={6} />

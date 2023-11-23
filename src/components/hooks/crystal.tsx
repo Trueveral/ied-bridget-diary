@@ -3,9 +3,9 @@ import { SpringValue, animated, useSpring } from "@react-spring/three";
 import { useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useState } from "react";
 import { Text } from "@react-three/drei";
-import { textSchema } from "../../schemas/schemas";
+import { textSchema } from "../../Schemas/schemas";
 import { z } from "zod";
-import { countSate, interactionState } from "@/states/states";
+import { countSate, interactionState } from "@/States/states";
 
 const AnimatedText = animated(Text);
 

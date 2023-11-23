@@ -1,4 +1,4 @@
-import { aiState } from "@/states/states";
+import { aiState } from "@/States/states";
 import { useSpring, a, to } from "@react-spring/three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
@@ -7,9 +7,9 @@ import * as THREE from "three";
 import {
   springOptions,
   animationRotations,
-} from "../../../../../helpers/ai/ringOptions";
+} from "../../../../../Helpers/AI/ringOptions";
 import { easing } from "maath";
-import { useRingAnimation } from "@/components/hooks/ai";
+import { useRingAnimation } from "@/components/Hooks/ai";
 
 export const RingIndicator = ({ index }: { index: number }) => {
   const ringRef = useRef<THREE.RingGeometry>();

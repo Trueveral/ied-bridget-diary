@@ -1,4 +1,4 @@
-import { aiState } from "@/states/states";
+import { aiState } from "@/States/states";
 import { animated, useSpring, useTransition } from "@react-spring/three";
 import { Box } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -131,8 +131,8 @@ const FaceBoxArray = () => {
   const { viewport } = useThree();
   const positions = useMemo(() => {
     const positions = [];
-    for (let x = -viewport.width / 2; x < viewport.width / 2; x += 0.4) {
-      for (let y = -viewport.height / 2; y < viewport.height / 2; y += 0.4) {
+    for (let x = -7; x < 7; x += 0.4) {
+      for (let y = -5; y < 5; y += 0.4) {
         positions.push(new THREE.Vector3(x, y, -1));
       }
     }
