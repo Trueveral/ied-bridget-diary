@@ -1,7 +1,7 @@
 "use client";
 import { ChangeEvent, useRef } from "react";
 import { useSnapshot } from "valtio";
-import { AIState, conversationAIState, globalState } from "@/States/states";
+import { conversationAIState, globalState } from "@/States/states";
 import { getEmotion } from "@/Helpers/AI/dataExchange";
 import {
   RecordButton,
@@ -12,69 +12,119 @@ import {
 import AutoHeightTextarea from "./AutoHeightTextArea";
 import cn from "classnames";
 import s from "./style.module.css";
-import {
-  getMessagesByUser,
-  getMessagesByUserAndConversationId,
-  openAIService,
-  prepareAIForSending,
-  resetAIState,
-  supabase,
-} from "@/Helpers/AI/base";
+import { prepareAIForSending, resetAIState } from "@/Helpers/AI/base";
+import { getMessagesByUserAndConversationId, supabase } from "@/Helpers/AI/db";
 import { useAIActionGuard } from "@/components/Hooks/ai";
 import { MessageType } from "@/components/Hooks/base";
+import { openAIService } from "@/Helpers/AI/ai";
 
-export const AIInput = () => {
-  const { inputText, messageTerminated } = useSnapshot(conversationAIState);
-  const abortController = useRef<AbortController | null>(null);
-  const isUseInputMethod = useRef(false);
-  const { canSend } = useAIActionGuard();
-  const { user, conversationId, isFirstMessage } = useSnapshot(globalState);
-  const { abortController: stateAbortController } =
-    useSnapshot(conversationAIState);
+const readDataChunk = async (
+  reader: ReadableStreamReader<Uint8Array>,
+  messageObj: MessageType
+) => {
+  const decoder = new TextDecoder("utf-8");
+  let bufferObj: any;
+  let buffer = "";
+  let done = false;
 
-  async function readData(conversationHistory: any[]) {
-    const completion = await openAIService.chat.completions.create({
+  while (!done) {
+    const { value, done: readerDone } = await reader.read();
+    done = readerDone;
+    const decodedValue = decoder.decode(value, { stream: !done });
+    buffer += decodedValue;
+    const lines = buffer.split("\n");
+    try {
+      for (const message of lines) {
+        if (!message || !message.startsWith("data:")) continue;
+        try {
+          bufferObj = JSON.parse(message.substring(6));
+          const result = bufferObj.choices[0].delta.content ?? "";
+          conversationAIState.responseText += result;
+          messageObj.gpt_id = bufferObj.id;
+          messageObj.text += result;
+          messageObj.conversation_id = bufferObj.conversation_id;
+          const finishReason = bufferObj.choices[0].finish_reason;
+          if (finishReason) {
+            return {
+              finishReason: finishReason,
+              messageObj: messageObj,
+            };
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      buffer = lines[lines.length - 1];
+    } catch (e) {
+      continue;
+    }
+  }
+};
+
+async function readData(
+  user: any,
+  abortController: any,
+  conversationHistory: any[]
+) {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
       model: "gpt-3.5-turbo-0613",
       messages: conversationHistory,
       stream: true,
-      presence_penalty: 0.6,
-      temperature: 0.6,
-    });
+    }),
+  });
 
-    const messageObj: MessageType = {
-      gpt_id: "",
-      user_id: user.id!!,
-      text: "",
-      role: "assistant",
-      timestamp: 0,
-    };
+  const messageObj: MessageType = {
+    user_id: user.id,
+    conversation_id: "",
+    gpt_id: "",
+    text: "",
+    role: "assistant",
+  };
 
-    conversationAIState.status = "responding";
-    conversationAIState.responseCompleted = false;
-    conversationAIState.pendingEmotion = true;
-    abortController.current = completion.controller;
-    conversationAIState.abortController = completion.controller;
+  conversationAIState.status = "responding";
+  conversationAIState.responseCompleted = false;
+  conversationAIState.pendingEmotion = true;
 
-    for await (const chunk of completion) {
-      const result = chunk.choices[0].delta.content ?? "";
+  const { finishReason, messageObj: updatedMessageObj } = await readDataChunk(
+    response.body.getReader(),
+    messageObj
+  );
 
-      conversationAIState.responseText += result;
+  return {
+    finishReason,
+    messageObj: updatedMessageObj,
+  };
 
-      messageObj.gpt_id = chunk.id;
-      messageObj.timestamp = chunk.created;
-      messageObj.text += result;
+  // abortController.current = completion.controller;
+  // for await (const chunk of completion) {
+  //   const result = chunk.choices[0].delta.content ?? "";
+  //   conversationAIState.responseText += result;
+  //   messageObj.gpt_id = chunk.id;
+  //   messageObj.timestamp = chunk.created;
+  //   messageObj.text += result;
+  //   const finishReason = chunk.choices[0].finish_reason;
+  //   if (finishReason) {
+  //     return {
+  //       finishReason: finishReason,
+  //       messageObj: messageObj,
+  //     };
+  //   }
+  //   // await new Promise(resolve => setTimeout(resolve, 50));
+  // }
+}
 
-      const finishReason = chunk.choices[0].finish_reason;
-      if (finishReason) {
-        return {
-          finishReason: finishReason,
-          messageObj: messageObj,
-        };
-      }
-
-      // await new Promise(resolve => setTimeout(resolve, 50));
-    }
-  }
+export const AIInput = () => {
+  const { inputText, messageTerminated } = useSnapshot(conversationAIState);
+  const abortController = useRef(null);
+  const isUseInputMethod = useRef(false);
+  const { canSend } = useAIActionGuard();
+  const { user, conversationId, isFirstMessage } = useSnapshot(globalState);
 
   const handleSend = async () => {
     const messages = isFirstMessage
@@ -99,7 +149,7 @@ export const AIInput = () => {
       messages
     );
 
-    await readData(conversationHistory)
+    await readData(user, abortController, conversationHistory)
       .then(data => {
         let finishType = "";
         switch (data?.finishReason) {
@@ -221,7 +271,6 @@ export const AIInput = () => {
     conversationAIState.refreshing = true;
     resetAIState();
     // create new conversation
-
     conversationAIState.refreshing = false;
   };
 

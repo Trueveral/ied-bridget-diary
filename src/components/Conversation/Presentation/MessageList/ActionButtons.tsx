@@ -1,8 +1,8 @@
 "use client";
 import s from "../style.module.css";
 import cn from "classnames";
-import { OpenAI } from "openai";
-import { supabase } from "@/Helpers/AI/base";
+// import { OpenAI } from "openai";
+import { supabase } from "@/Helpers/AI/db";
 import { useEffect, useState } from "react";
 
 export const SaveButton = ({ messageGPTID }: { messageGPTID: string }) => {
@@ -95,12 +95,12 @@ export const SaveButton = ({ messageGPTID }: { messageGPTID: string }) => {
 };
 
 export const AudioButton = () => {
-  const handleSave = () => {
-    const openAIService = new OpenAI({
-      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-      dangerouslyAllowBrowser: true,
-    });
-  };
+  // const handleSave = () => {
+  //   const openAIService = new OpenAI({
+  //     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  //     dangerouslyAllowBrowser: true,
+  //   });
+  // };
 
   return (
     <div

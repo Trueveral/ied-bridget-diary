@@ -1,4 +1,4 @@
-import { renameConversation } from "@/Helpers/AI/base";
+import { renameConversation } from "@/Helpers/AI/db";
 import { conversationAIState, globalState } from "@/States/states";
 import { useSpring, a } from "@react-spring/web";
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSnapshot } from "valtio";
 import { a, useSpring } from "@react-spring/web";
 import { globalState } from "@/States/states";
-import { getConversationsByUser, supabase } from "@/Helpers/AI/base";
+import { getConversationsByUser, supabase } from "@/Helpers/AI/db";
 import { ConversationCard } from "./ConversationCard";
 import { type RealtimeChannel } from "@supabase/supabase-js";
 import s from "./style.module.css";

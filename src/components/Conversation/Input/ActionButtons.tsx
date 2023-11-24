@@ -1,5 +1,5 @@
 import { useAIActionGuard } from "@/components/Hooks/ai";
-import { openAIService } from "@/Helpers/AI/base";
+import { openAIService } from "@/Helpers/AI/ai";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 

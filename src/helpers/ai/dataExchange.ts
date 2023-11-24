@@ -4,7 +4,7 @@ import {
 } from "@/States/states";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { openAIService } from "./base";
+import { openAIService } from "./ai";
 import { MessageType } from "@/components/Hooks/base";
 
 const aiResponseSchema = z.object({

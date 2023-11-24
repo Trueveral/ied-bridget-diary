@@ -1,13 +1,13 @@
 "use client";
-import { useState, useRef, useEffect, use } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { a, useSpring } from "@react-spring/web";
+import { resetAIState } from "@/Helpers/AI/base";
 import {
   getConversationsByUser,
   getUsersListByName,
-  resetAIState,
   supabase,
-} from "@/Helpers/AI/base";
+} from "@/Helpers/AI/db";
 import { useSnapshot } from "valtio";
 import { globalState } from "@/States/states";
 import s from "./style.module.css";
@@ -20,8 +20,8 @@ export const NewProfileButton = () => {
   const [userList, setUserList] = useState<any>([]);
   const { user } = useSnapshot(globalState);
 
-  const errorMessage =
-    "Please only countain lower/upper case letters, numbers, and underscores.";
+  // const errorMessage =
+  //   "Please only countain lower/upper case letters, numbers, and underscores.";
 
   const formRef = useRef<HTMLDivElement | null>(null);
 
@@ -67,7 +67,6 @@ export const NewProfileButton = () => {
       }
       setUserList(users);
     }
-
     if (name) {
       fetchUsers();
     }
@@ -159,7 +158,7 @@ export const NewProfileButton = () => {
         <a.div
           ref={formRef}
           className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-transparent backdrop:blur-2xl p-4 rounded-2xl flex flex-row justify-start items-center w-2/5 gap-4 z-10"
-          // style={props}
+          style={props}
         >
           <div className="flex flex-col gap-2 w-full">
             <div className="flex flex-row w-full gap-4">

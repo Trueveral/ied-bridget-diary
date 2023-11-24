@@ -4,17 +4,17 @@ import {
   getSavedDiaries,
   getSavedDiariesByUser,
   supabase,
-} from "@/Helpers/AI/base";
+} from "@/Helpers/AI/db";
 import { globalState } from "@/States/states";
 import { use, useCallback, useEffect, useRef, useState } from "react";
 import { useSnapshot } from "valtio";
-import { MessageType, UserType } from "../Hooks/base";
+// import { MessageType, UserType } from "../Hooks/base";
 import { type RealtimeChannel } from "@supabase/supabase-js";
 import cn from "classnames";
 import s from "./style.module.css";
 import { DiaryUserMessage } from "./UserMessage";
 import { DiaryAssistantMessage } from "./AssistantMessage";
-import { FixedSizeList as List } from "react-window";
+// import { FixedSizeList as List } from "react-window";
 
 export const Diary = () => {
   const { user } = useSnapshot(globalState);

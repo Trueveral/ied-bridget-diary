@@ -6,11 +6,8 @@ import {
 } from "./ChatComponent";
 import s from "../style.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  getMessagesByUser,
-  getMessagesByUserAndConversationId,
-  supabase,
-} from "@/Helpers/AI/base";
+import { getMessagesByUserAndConversationId, supabase } from "@/Helpers/AI/db";
+import { getMessagesByUser } from "@/Helpers/AI/getMessagesByUser";
 import { useSnapshot } from "valtio";
 import {
   conversationAIState,
