@@ -16,7 +16,6 @@ import { prepareAIForSending, resetAIState } from "@/Helpers/AI/base";
 import { getMessagesByUserAndConversationId, supabase } from "@/Helpers/AI/db";
 import { useAIActionGuard } from "@/components/Hooks/ai";
 import { MessageType } from "@/components/Hooks/base";
-import { openAIService } from "@/Helpers/AI/ai";
 
 const readDataChunk = async (
   reader: ReadableStreamReader<Uint8Array>,
