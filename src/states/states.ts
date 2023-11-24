@@ -105,6 +105,18 @@ export const diaryState: DiaryStateType = proxy({
   savedDiaries: [],
 });
 
+type CollectionStateType = {
+  activeId: number;
+  activeRef: THREE.Mesh | null;
+  total: number;
+};
+
+export const collectionState: CollectionStateType = proxy({
+  activeId: 3,
+  activeRef: null,
+  total: 7,
+});
+
 type GlobalStateType = {
   user: UserType;
   link: "conversation" | "diary" | "collections" | "about";

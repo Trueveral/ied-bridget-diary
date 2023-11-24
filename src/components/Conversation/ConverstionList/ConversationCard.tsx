@@ -1,3 +1,4 @@
+import { renameConversation } from "@/Helpers/AI/base";
 import { conversationAIState, globalState } from "@/States/states";
 import { useSpring, a } from "@react-spring/web";
 
@@ -29,16 +30,27 @@ export const ConversationCard = ({ conversation }: { conversation: any }) => {
 
   const handleCardClick = (conversationId: string) => {
     globalState.conversationId = conversationId;
+    conversationAIState.inputText = "";
+    conversationAIState.responseText = "";
+    conversationAIState.userMessage = "";
+    conversationAIState.responseCompleted = true;
+    conversationAIState.pendingEmotion = false;
   };
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
-  const handleCompleteClick = () => {
+  const handleCompleteClick = async () => {
     setIsEditing(false);
-    // Call the callback function here
-    // ...
+    setNewTitle(newTitle);
+    await renameConversation(conversation.id, newTitle);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleCompleteClick();
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,10 +71,7 @@ export const ConversationCard = ({ conversation }: { conversation: any }) => {
   return (
     <a.button
       key={conversation.id}
-      className={`${
-        canSwitchConversation ? "cursor-pointer" : "cursor-not-allowed"
-      } flex flex-row gap-2 p-4 rounded-lg h-12 items-center justify-between w-full`}
-      onClick={() => handleCardClick(conversation.id)}
+      className={`flex flex-row gap-2 p-4 rounded-lg h-12 items-center justify-between w-full`}
       style={cardStyleProps}
       disabled={!canSwitchConversation}
       ref={conversationCardRef}
@@ -76,22 +85,28 @@ export const ConversationCard = ({ conversation }: { conversation: any }) => {
           value={newTitle}
           placeholder={conversation.title ? conversation.title : "Untitled"}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
         />
       ) : (
-        <div className="text-sm text-white/80 font-semibold">
+        <div
+          className={`${
+            canSwitchConversation ? "cursor-pointer" : "cursor-not-allowed"
+          } text-sm text-white/80 font-semibold w-full text-start`}
+          onClick={() => handleCardClick(conversation.id)}
+        >
           {conversation.title ? conversation.title : "Untitled"}
         </div>
       )}
       {isEditing ? (
         <button
-          className=" text-white/80 focus:outline-none"
+          className=" text-white/80 focus:outline-none bg-transparent hover:text-white transition ease-in-out duration-300"
           onClick={handleCompleteClick}
         >
           Done
         </button>
       ) : (
         <button
-          className=" text-white/80 focus:outline-none"
+          className=" text-white/80 focus:outline-none bg-transparent hover:text-white transition ease-in-out duration-300"
           onClick={handleEditClick}
         >
           Rename

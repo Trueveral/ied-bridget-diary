@@ -35,7 +35,7 @@ export default function Visual() {
         <group>
           <RingArray number={6} />
           {/* <CrystalArray /> */}
-          <Particles count={6000} />
+          <Particles count={2000} />
         </group>
         <PostPro />
         <BakeShadows />

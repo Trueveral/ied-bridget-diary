@@ -15,7 +15,7 @@ export const AnimatedChatComponent = () => {
   const { showMask } = useSnapshot(conversationChatListState);
 
   const springProps = useSpring({
-    opacity: showMask ? 0 : 1,
+    opacity: showMask ? 0.7 : 1,
     config: { duration: 300 },
   });
 

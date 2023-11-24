@@ -106,7 +106,12 @@ export const NewProfileButton = () => {
     globalState.conversationId = await getConversationsByUser(
       selectedUser.user.id
     ).then(data => {
-      return data.data[0].id;
+      if (!data.data) return null;
+      if (data.data[0]) {
+        return data.data[0].id;
+      } else {
+        return null;
+      }
     });
 
     setShowForm(false);

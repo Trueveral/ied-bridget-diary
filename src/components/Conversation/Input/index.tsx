@@ -206,8 +206,8 @@ export const AIInput = () => {
     }
   };
 
-  const handleTerminate = async (controller: any) => {
-    controller.abort();
+  const handleTerminate = () => {
+    abortController.current?.abort();
     conversationAIState.messageTerminated = true;
     conversationAIState.responseText = "";
     conversationAIState.userMessage = "";
@@ -240,12 +240,8 @@ export const AIInput = () => {
       />
       <div className="flex flex-row flex-wrap min-w-max gap-2">
         <SendButton onSendCallback={handleSend} />
+        <TerminateButton onTerminateCallback={handleTerminate} />
         <RecordButton onSendCallback={handleSend} />
-        <TerminateButton
-          onTerminateCallback={() => {
-            handleTerminate(stateAbortController);
-          }}
-        />
         <StartNewConversationButton
           onClickCallback={handleStartNewConversation}
         />

@@ -10,6 +10,8 @@ export default function DiaryBGMask() {
   const { link } = useSnapshot(globalState);
   const props = useSpring({
     opacity: link === "diary" ? 1 : 0,
+    height: link === "diary" ? 4000 : 0,
+    width: link === "diary" ? 3000 : 0,
     config: { duration: 1000 },
   });
 
@@ -17,7 +19,7 @@ export default function DiaryBGMask() {
     <a.div
       className={`${cn(
         s.diariesMask
-      )} fixed h-screen w-screen bg-black/20 backdrop-blur-2xl top-0 left-0 -z-[5]`}
+      )} fixed bg-black/20 backdrop-blur-2xl top-0 left-0 -z-[5]`}
       style={props}
     />
   );

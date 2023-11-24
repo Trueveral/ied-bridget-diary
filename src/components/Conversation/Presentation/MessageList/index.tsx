@@ -1,11 +1,11 @@
 "use client";
-import { MessageType, UserType, useUser } from "@/components/Hooks/base";
+import { MessageType, UserType } from "@/components/Hooks/base";
 import {
   AssistantMessageComponent,
   UserMessageComponent,
 } from "./ChatComponent";
 import s from "../style.module.css";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getMessagesByUser,
   getMessagesByUserAndConversationId,
@@ -29,31 +29,31 @@ export const ChatList = ({
   const [messages, setMessages] = useState<MessageType[]>([]);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const { showMask } = useSnapshot(conversationChatListState);
+  const { responseCompleted } = useSnapshot(conversationAIState);
   const props = useSpring({
     // height: showMask ? 250 : 0,
-    opacity: showMask ? 1 : 0,
+    opacity: showMask ? 1 : 0.5,
     config: { duration: 300 },
   });
 
   const { user, conversationId, isFirstMessage } = useSnapshot(globalState);
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      if (!user.id) return;
-      await getMessagesByUserAndConversationId(
-        user.id!!,
-        conversationId!!
-      ).then(data => {
-        if (data.messages === null) return;
-        console.log(data.messages);
-        setMessages(data.messages!!);
-      });
-    };
+  const fetchMessages = useCallback(async () => {
+    if (!user.id) return setMessages([]);
+    if (!conversationId) return setMessages([]);
+    await getMessagesByUserAndConversationId(user.id, conversationId).then(
+      data => {
+        if (data.messages === null) return setMessages([]);
+        setMessages(data.messages);
+      }
+    );
+  }, [user, conversationId]);
 
+  useEffect(() => {
     fetchMessages();
 
-    channelRef.current = supabase
-      .channel("custom-all-channel")
+    const channel = supabase.channel("custom-all-channel");
+    channel
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "Message" },
@@ -64,9 +64,9 @@ export const ChatList = ({
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channelRef.current!!);
+      supabase.removeChannel(channel);
     };
-  }, [user, conversationId, isFirstMessage]);
+  }, [fetchMessages, responseCompleted]);
 
   // Note: the pattern of returning user and assistant messages separately is deliberate.
   // Because the action buttons are attached to the assistant messages
@@ -74,7 +74,7 @@ export const ChatList = ({
   // IE. It forces the messages to be saved in pairs
   return (
     <div
-      className={`${s.chatListMask} flex flex-col overflow-y-auto h-full gap-2 pt-24 pb-96 z-20`}
+      className={`${s.chatListMask} flex flex-col overflow-y-auto h-full gap-2 pt-24 pb-96 z-20 max-w-3xl`}
       onMouseEnter={() => {
         conversationChatListState.showMask = true;
       }}

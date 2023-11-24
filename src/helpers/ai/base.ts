@@ -194,7 +194,7 @@ export async function renameConversation(
 ) {
   const { data, error } = await supabase
     .from("Conversation")
-    .update({ name: newName })
+    .update({ title: newName })
     .eq("id", conversationId);
 
   return {

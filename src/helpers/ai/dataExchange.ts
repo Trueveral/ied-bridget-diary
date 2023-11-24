@@ -135,54 +135,6 @@ export const exchangeChatMessage = async (
     });
 };
 
-export function processOpenAIChatCompletion(conversationHistory: any[]) {
-  async function readData() {
-    const completion = await openAIService.chat.completions.create({
-      model: "gpt-3.5-turbo-0613",
-      messages: conversationHistory,
-      stream: true,
-      presence_penalty: 0.6,
-      temperature: 0.6,
-    });
-
-    const messageObj: MessageType = {
-      id: "",
-      user_id: conversationAIState.user,
-      text: "",
-      role: "assistant",
-      timestamp: 0,
-    };
-
-    conversationAIState.status = "responding";
-    conversationAIState.responseCompleted = false;
-    conversationAIState.pendingEmotion = true;
-    conversationChatListState.abortController = completion.controller;
-
-    for await (const chunk of completion) {
-      const result = chunk.choices[0].delta.content ?? "";
-
-      conversationAIState.responseText += result;
-
-      messageObj.id = chunk.id;
-      messageObj.timestamp = chunk.created;
-      messageObj.text += result;
-
-      const finishReason = chunk.choices[0].finish_reason;
-      if (finishReason) {
-        return {
-          finishReason: finishReason,
-          messageObj: messageObj,
-        };
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 50));
-    }
-  }
-
-  const reason = readData();
-  return Promise.resolve(reason);
-}
-
 export async function getEmotion() {
   conversationAIState.pendingEmotion = true;
   const { type, ratio } = await globalThis

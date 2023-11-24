@@ -5,6 +5,6 @@
     rgba(255, 255, 255, 0.1) 50%,
     rgba(255, 255, 255, 0) 100%
   ); */
-  -webkit-mask-image: linear-gradient(to left, transparent 0%, black 70%);
-  mask-image: linear-gradient(to left, transparent 0%, black 70%);
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 5%);
+  mask-image: linear-gradient(to top, transparent 0%, black 5%);
 }

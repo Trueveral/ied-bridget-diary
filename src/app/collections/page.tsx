@@ -1,3 +1,18 @@
+import { CollectionBrief } from "@/components/Collection/Brief";
+import {
+  CollectionLeftButton,
+  CollectionRightButton,
+} from "@/components/Collection/Button";
+
 export default function Page() {
-  return <h1>Hello, Next.js!</h1>;
+  return (
+    <>
+      <CollectionLeftButton />
+      <CollectionRightButton />
+      <CollectionBrief
+        title="Mingcute"
+        content="Mingcute is a collection of Ming's cute photos."
+      />
+    </>
+  );
 }
