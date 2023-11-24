@@ -56,7 +56,7 @@ export const ConversationList = () => {
       style={hoverProps}
     >
       <div className="flex flex-col gap-2 p-4 h-full">
-        <div className="text-xl font-semibold top-4 cursor-default sticky">
+        <div className="text-xl font-semibold top-4 cursor-default sticky text-white">
           Conversations
         </div>
         <div

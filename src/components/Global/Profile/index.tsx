@@ -207,7 +207,7 @@ export const NewProfileButton = () => {
                 canSend
                   ? "cursor-pointer opacity-100"
                   : "cursor-default opacity-30"
-              } rounded-xl text-left max-w-20 w-fit h-fit pl-4 pr-4 pt-2 pb-2 bg-black/30 backdrop-blur-xl`}
+              } rounded-xl text-left max-w-20 w-fit h-fit pl-4 pr-4 pt-2 pb-2 bg-black/30 backdrop-blur-xl text-white`}
               onClick={() => handleNewUserClick()}
               disabled={!canSend}
             >
