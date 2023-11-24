@@ -86,25 +86,20 @@ export const RecordButton = ({ onSendCallback }: { onSendCallback: any }) => {
   };
 
   const stopRecording = async () => {
-    if (recorder) {
-      recorder.stop();
-      setIsRecording(false);
-
-      const audioBlob = new Blob(audioData, { type: "audio/mp3" }); // 创建 Blob 对象
-      // save audio blob to file
-
-      const formData = new FormData();
-      formData.append("file", audioBlob); // 将 Blob 对象添加到 FormData 对象
-
-      const transcription = await openAIService.audio.transcriptions.create({
-        file: audioBlob,
-        model: "whisper-1",
-      });
-
-      console.log(transcription.text);
-
-      setAudioData([]); // 清空音频数据
-    }
+    // if (recorder) {
+    //   recorder.stop();
+    //   setIsRecording(false);
+    //   const audioBlob = new Blob(audioData, { type: "audio/mp3" }); // 创建 Blob 对象
+    //   // save audio blob to file
+    //   const formData = new FormData();
+    //   formData.append("file", audioBlob); // 将 Blob 对象添加到 FormData 对象
+    //   const transcription = await openAIService.audio.transcriptions.create({
+    //     file: audioBlob,
+    //     model: "whisper-1",
+    //   });
+    //   console.log(transcription.text);
+    //   setAudioData([]); // 清空音频数据
+    // }
   };
   return (
     <button
