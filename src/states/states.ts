@@ -1,5 +1,4 @@
 import { UserType } from "@/components/Hooks/base";
-import { generateUUID } from "three/src/math/MathUtils.js";
 import { proxy } from "valtio";
 import { z } from "zod";
 
