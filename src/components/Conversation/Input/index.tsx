@@ -56,8 +56,8 @@ export const AIInput = () => {
           };
         });
 
-      if (previousUserMessages.length > 7) {
-        previousUserMessages.splice(0, previousUserMessages.length - 7);
+      if (previousUserMessages.length > 13) {
+        previousUserMessages.splice(0, previousUserMessages.length - 13);
       }
     }
 
