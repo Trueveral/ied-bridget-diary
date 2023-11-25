@@ -4,7 +4,7 @@ import { PerspectiveCamera } from "@react-three/drei";
 
 import { useSpring, animated } from "@react-spring/three";
 import { useSnapshot } from "valtio";
-import { globalState } from "@/States/states";
+import { globalState } from "@/states/states";
 
 // ref: this code refers to: https://codesandbox.io/s/bst0cy
 

@@ -7,7 +7,7 @@ import {
   conversationAIState,
   conversationChatListState,
   globalState,
-} from "@/States/states";
+} from "@/states/states";
 import { useSnapshot } from "valtio";
 
 const SCALE_FACTOR = 0.4;

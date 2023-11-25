@@ -3,7 +3,7 @@ import { useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { easing } from "maath";
-import { conversationChatListState } from "@/States/states";
+import { conversationChatListState } from "@/states/states";
 import { useSnapshot } from "valtio";
 import { a, useSpring } from "@react-spring/three";
 

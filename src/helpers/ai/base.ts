@@ -1,4 +1,4 @@
-import { conversationAIState, globalState } from "@/States/states";
+import { conversationAIState, globalState } from "@/states/states";
 import { prompt } from "@/Helpers/AI/prompt";
 
 export const resetAIState = () => {

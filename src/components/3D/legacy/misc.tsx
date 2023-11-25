@@ -17,7 +17,7 @@ import {
 import { animated, easings, useSpring } from "@react-spring/three";
 import React from "react";
 import { easing } from "maath";
-import { interactionState } from "@/States/states";
+import { interactionState } from "@/states/states";
 
 export const SceneManager = () => {
   const { activeRef } = useSnapshot(interactionState);

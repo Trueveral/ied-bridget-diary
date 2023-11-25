@@ -1,7 +1,7 @@
 "use client";
 import { ChangeEvent, useId, useRef } from "react";
 import { useSnapshot } from "valtio";
-import { conversationAIState, globalState } from "@/States/states";
+import { conversationAIState, globalState } from "@/states/states";
 import { getEmotion, readData, readDataChunk } from "@/Helpers/AI/dataExchange";
 import {
   RecordButton,

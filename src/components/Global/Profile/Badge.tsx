@@ -1,5 +1,5 @@
 "use client";
-import { globalState } from "@/States/states";
+import { globalState } from "@/states/states";
 import { Icon } from "@iconify/react";
 import { useSnapshot } from "valtio/react";
 

@@ -9,7 +9,7 @@ import {
   SMAA,
 } from "@react-three/postprocessing";
 import React from "react";
-import { interactionState, conversationAIState } from "@/States/states";
+import { interactionState, conversationAIState } from "@/states/states";
 
 const SERET_CODE = "KeasonAya";
 

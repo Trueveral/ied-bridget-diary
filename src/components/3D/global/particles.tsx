@@ -7,7 +7,7 @@ import { useSnapshot } from "valtio";
 import { easing } from "maath";
 import React from "react";
 import { useParticles } from "../../Hooks/3d/vfx";
-import { interactionState } from "@/States/states";
+import { interactionState } from "@/states/states";
 
 // ref: this code is largely based on: https://codesandbox.io/s/qpfgyp
 

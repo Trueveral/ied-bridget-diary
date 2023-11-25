@@ -1,7 +1,7 @@
 "use client";
 
 import { useSnapshot } from "valtio";
-import { collectionState } from "@/States/states";
+import { collectionState } from "@/states/states";
 export const CollectionBrief = ({
   title,
   content,

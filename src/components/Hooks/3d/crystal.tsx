@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Text } from "@react-three/drei";
 import { textSchema } from "../../../Types/types";
 import { z } from "zod";
-import { countSate, interactionState } from "@/States/states";
+import { countSate, interactionState } from "@/states/states";
 
 const AnimatedText = animated(Text);
 

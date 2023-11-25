@@ -2,7 +2,7 @@ import { useSnapshot } from "valtio";
 import { animated, easings, useSpring } from "@react-spring/three";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { interactionState } from "@/States/states";
+import { interactionState } from "@/states/states";
 import { useRef } from "react";
 import { Float } from "@react-three/drei";
 import {

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSnapshot } from "valtio";
 import { a, useSpring } from "@react-spring/web";
-import { conversationAIState, globalState } from "@/States/states";
+import { conversationAIState, globalState } from "@/states/states";
 import {
   createConversation,
   getConversationsByUser,

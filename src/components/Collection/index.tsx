@@ -7,7 +7,7 @@ import {
 import { useState, useEffect } from "react";
 import { useSnapshot } from "valtio";
 import { useTransition, animated } from "@react-spring/web";
-import { collectionState } from "@/States/states";
+import { collectionState } from "@/states/states";
 import { CollectionBrief } from "./Brief";
 
 interface ContentData {

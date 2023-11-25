@@ -1,4 +1,4 @@
-import { conversationAIState } from "@/States/states";
+import { conversationAIState } from "@/states/states";
 import { SpringOptionType } from "@/Types/types";
 
 // Helper functions to simplify the logic
