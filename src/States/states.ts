@@ -120,8 +120,8 @@ type GlobalStateType = {
 };
 export const globalState: GlobalStateType = proxy({
   user: {
-    id: "",
-    username: "",
+    id: "fbf74ce6-0ee0-428d-9985-8db9a467c795",
+    username: "Johnny Strawberryseed",
   },
   link: "conversation",
   conversationId: undefined,
