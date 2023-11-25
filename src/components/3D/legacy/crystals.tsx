@@ -19,7 +19,7 @@ import {
   useText,
 } from "../../Hooks/3d/crystal";
 import { CrystalMaterial } from "./materials";
-import { countSate, interactionState } from "@/states/states";
+import { countSate, interactionState } from "@/States/states";
 // import { z } from "zod";
 
 const Crystal = ({

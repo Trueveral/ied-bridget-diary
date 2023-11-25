@@ -5,7 +5,7 @@ import {
   getSavedDiariesByUser,
   supabase,
 } from "@/Helpers/AI/db";
-import { globalState } from "@/states/states";
+import { globalState } from "@/States/states";
 import { useEffect, useRef, useState } from "react";
 import { useSnapshot } from "valtio";
 import { type RealtimeChannel } from "@supabase/supabase-js";

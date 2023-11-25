@@ -3,7 +3,7 @@ import {
   conversationAIState,
   conversationChatListState,
   globalState,
-} from "@/states/states";
+} from "@/States/states";
 import { Box } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { easing } from "maath";

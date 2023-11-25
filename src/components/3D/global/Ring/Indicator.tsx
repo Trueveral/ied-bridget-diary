@@ -1,4 +1,4 @@
-import { conversationAIState } from "@/states/states";
+import { conversationAIState } from "@/States/states";
 import { a } from "@react-spring/three";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";

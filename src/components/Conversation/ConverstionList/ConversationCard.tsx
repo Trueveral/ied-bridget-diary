@@ -3,7 +3,7 @@ import {
   getConversationsByUser,
   renameConversation,
 } from "@/Helpers/AI/db";
-import { conversationAIState, globalState } from "@/states/states";
+import { conversationAIState, globalState } from "@/States/states";
 import { Icon } from "@iconify/react";
 import { useSpring, a } from "@react-spring/web";
 

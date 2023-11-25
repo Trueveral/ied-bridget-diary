@@ -2,7 +2,7 @@
 import {
   conversationAIState,
   conversationChatListState,
-} from "@/states/states";
+} from "@/States/states";
 import { useSnapshot } from "valtio";
 import cn from "classnames";
 import s from "../style.module.css";

@@ -12,7 +12,7 @@ import {
   conversationAIState,
   conversationChatListState,
   globalState,
-} from "@/states/states";
+} from "@/States/states";
 import { a, useSpring } from "@react-spring/web";
 import { type RealtimeChannel } from "@supabase/supabase-js";
 import { AudioButton, SaveButton } from "./ActionButtons";

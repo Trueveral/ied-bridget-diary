@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import Link from "next/link";
-import { globalState } from "@/states/states";
+import { globalState } from "@/States/states";
 
 export const Navigator = () => {
   const [isMobile, setIsMobile] = useState(false);

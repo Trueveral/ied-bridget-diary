@@ -3,7 +3,7 @@ import { OBJLoader } from "three-stdlib";
 import * as THREE from "three";
 import { a, useSpring } from "@react-spring/three";
 import { useSnapshot } from "valtio";
-import { collectionState, globalState } from "@/states/states";
+import { collectionState, globalState } from "@/States/states";
 import { useRef } from "react";
 
 const scaleArray = [14, 14, 14, 6, 14, 14];

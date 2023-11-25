@@ -1,6 +1,6 @@
 "use client";
 
-import { globalState } from "@/states/states";
+import { globalState } from "@/States/states";
 import { useSnapshot } from "valtio";
 import { a, useSpring } from "@react-spring/web";
 import s from "./style.module.css";

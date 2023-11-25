@@ -1,6 +1,6 @@
 import { useSnapshot } from "valtio";
 import { CollectionObject } from "./Objects";
-import { collectionState } from "@/states/states";
+import { collectionState } from "@/States/states";
 
 export const CollectionsScene = () => {
   const { total } = useSnapshot(collectionState);

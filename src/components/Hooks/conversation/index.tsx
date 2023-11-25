@@ -1,6 +1,6 @@
 import { springOptions } from "@/Helpers/AI/ringOptions";
 import { calculatePosition, createToArray } from "@/Helpers/AI/ringAnimation";
-import { conversationAIState } from "@/states/states";
+import { conversationAIState } from "@/States/states";
 import { useSpring } from "@react-spring/three";
 import { useEffect } from "react";
 import { useSnapshot } from "valtio";

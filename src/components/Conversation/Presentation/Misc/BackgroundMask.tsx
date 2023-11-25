@@ -3,7 +3,7 @@ import { a, useSpring } from "@react-spring/web";
 import s from "../style.module.css";
 import cn from "classnames";
 import { useSnapshot } from "valtio";
-import { conversationChatListState, globalState } from "@/states/states";
+import { conversationChatListState, globalState } from "@/States/states";
 
 export const BackgroundMask = () => {
   const {

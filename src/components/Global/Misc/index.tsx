@@ -1,5 +1,5 @@
 "use client";
-import { globalState } from "@/states/states";
+import { globalState } from "@/States/states";
 import { useEffect } from "react";
 
 export const UserIDSetter = () => {

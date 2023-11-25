@@ -7,7 +7,7 @@ import {
   getUsersListByName,
   supabase,
 } from "@/Helpers/AI/db";
-import { globalState } from "@/states/states";
+import { globalState } from "@/States/states";
 import s from "./style.module.css";
 import cn from "classnames";
 import { ProfileBadge } from "./Badge";

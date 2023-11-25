@@ -1,5 +1,5 @@
 "use client";
-import { collectionState } from "@/states/states";
+import { collectionState } from "@/States/states";
 import { Icon } from "@iconify/react";
 
 export const CollectionLeftButton = () => {

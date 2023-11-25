@@ -2,7 +2,7 @@
 import {
   conversationAIState,
   conversationChatListState,
-} from "@/states/states";
+} from "@/States/states";
 import React, { useEffect } from "react";
 import { useSnapshot } from "valtio";
 

@@ -1,4 +1,4 @@
-import { conversationAIState } from "@/states/states";
+import { conversationAIState } from "@/States/states";
 import { z } from "zod";
 
 const aiResponseSchema = z.object({
