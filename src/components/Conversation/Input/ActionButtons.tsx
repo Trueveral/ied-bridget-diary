@@ -1,5 +1,4 @@
-import { useAIActionGuard } from "@/components/Hooks/ai";
-import { openAIService } from "@/Helpers/AI/ai";
+import { useAIActionGuard } from "@/components/Hooks/conversation";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 
@@ -9,10 +8,10 @@ export const SendButton = ({ onSendCallback }: { onSendCallback: any }) => {
     <button
       onClick={onSendCallback}
       disabled={!canSend}
-      className={`transition ease-in-out duration-300 rounded-full p-2 w-10 h-10 flex items-center justify-center ${
+      className={`transition ease-in-out duration-300 rounded-full p-2 w-10 h-10 flex items-center justify-center backdrop-blur-lg ${
         canSend
           ? "bg-blue-600 text-white"
-          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "bg-white/20 text-gray-500 cursor-not-allowed"
       }`}
       title="Send"
     >
@@ -31,10 +30,10 @@ export const TerminateButton = ({
     <button
       onClick={onTerminateCallback}
       disabled={!canTerminate}
-      className={`transition ease-in-out duration-300 rounded-full w-10 h-10 flex items-center justify-center p-2 ${
+      className={`transition ease-in-out duration-300 rounded-full w-10 h-10 flex items-center justify-center p-2 backdrop-blur-lg ${
         canTerminate
           ? "bg-blue-600 text-white"
-          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "bg-white/20 text-gray-500 cursor-not-allowed"
       }`}
       title="Terminate"
     >
@@ -58,10 +57,9 @@ export const StartNewConversationButton = ({
           ? "bg-blue-600 text-white"
           : "bg-gray-300 text-gray-500 cursor-not-allowed"
       }`}
-      title="Clear"
+      title="Create new"
     >
-      {/* 图标插槽，可以替换为任何图标 */}
-      <Icon icon="healthicons:cleaning" color="white" fill="white" />
+      <Icon icon="ri:chat-new-fill" color="white" fill="white" />
     </button>
   );
 };

@@ -1,26 +1,16 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  BakeShadows,
-  CameraControls,
-  Environment,
-  Icosahedron,
-  OrthographicCamera,
-} from "@react-three/drei";
-import * as THREE from "three";
-import { Particles } from "./particles";
-import { CrystalArray } from "./crystals";
-import { CameraRig } from "./camera";
-import { PostPro } from "./postpro";
-import { FaceBox, MainComponent, SceneManager } from "./misc";
-import { Ring } from "./ring";
-import { AnimatedAICubes } from "./animations/ai/box";
-import { useTransition } from "@react-spring/three";
-import { RingArray } from "./animations/ai/ring";
-import { useRef } from "react";
-import { easing } from "maath";
-import { PointLight } from "./pointLight";
+import { Canvas } from "@react-three/fiber";
+import { BakeShadows, Environment } from "@react-three/drei";
+import { Particles } from "./global/particles";
+
+import { CameraRig } from "./basic/camera";
+import { PostPro } from "./effects/postpro";
+import { AnimatedAICubes } from "./global/Box";
+
+import { RingArray } from "./global/Ring";
+
+import { PointLight } from "./global/pointLight";
 import { CollectionsScene } from "./Collections";
 
 export default function Visual() {
@@ -39,7 +29,6 @@ export default function Visual() {
         </group>
         <PostPro />
         <BakeShadows />
-        <SceneManager />
         <Environment preset="warehouse" />
       </Canvas>
     </>

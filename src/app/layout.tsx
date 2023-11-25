@@ -10,6 +10,8 @@ export const metadata: Metadata = {
 import { NewProfileButton } from "@/components/Global/Profile";
 import Visual from "@/components/3D/visual";
 import DiaryBGMask from "@/components/Global/Mask/DiaryBGMask";
+import { BackgroundMask } from "@/components/Conversation/Presentation/Misc/BackgroundMask";
+import { UserIDSetter } from "@/components/Global/Misc";
 
 export default function RootLayout({
   children,
@@ -23,10 +25,12 @@ export default function RootLayout({
           <Navigator />
           <NewProfileButton />
           <DiaryBGMask />
+          {/* <BackgroundMask /> */}
           <div className="w-screen h-screen fixed -z-10">
             <Visual />
             {/* <Overlay /> */}
           </div>
+          <UserIDSetter />
         </>
         {children}
       </body>

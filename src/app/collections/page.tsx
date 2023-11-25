@@ -1,18 +1,5 @@
-import { CollectionBrief } from "@/components/Collection/Brief";
-import {
-  CollectionLeftButton,
-  CollectionRightButton,
-} from "@/components/Collection/Button";
+import { Collection } from "@/components/Collection";
 
 export default function Page() {
-  return (
-    <>
-      <CollectionLeftButton />
-      <CollectionRightButton />
-      <CollectionBrief
-        title="Mingcute"
-        content="Mingcute is a collection of Ming's cute photos."
-      />
-    </>
-  );
+  return <Collection />;
 }

@@ -1,10 +1,9 @@
 .conversationListMask {
-  /* 确保容器大小足够包含文本 */
-  /* background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0) 100%
-  ); */
   -webkit-mask-image: linear-gradient(to top, transparent 0%, black 5%);
   mask-image: linear-gradient(to top, transparent 0%, black 5%);
+}
+
+.conversationTitleMask {
+  -webkit-mask-image: radial-gradient(black 0%, black 20%, transparent 100%);
+  mask-image: radial-gradient(black 0%, black 20%, transparent 100%);
 }

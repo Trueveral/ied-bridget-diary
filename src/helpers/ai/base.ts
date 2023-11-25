@@ -1,8 +1,5 @@
 import { conversationAIState, globalState } from "@/States/states";
-import { generateUUID } from "three/src/math/MathUtils.js";
-import { MessageType } from "@/components/Hooks/base";
-import { useRouter } from "next/router";
-import { redirect } from "next/navigation";
+import { prompt } from "@/Helpers/AI/prompt";
 
 export const resetAIState = () => {
   conversationAIState.responseText = "";
@@ -20,7 +17,8 @@ export const resetAIState = () => {
 export const prepareAIForSending = (
   messageTerminated: boolean,
   inputText: string,
-  chatRecords: readonly any[]
+  chatRecords: readonly any[],
+  username: string
 ) => {
   conversationAIState.messageTerminated = false;
   conversationAIState.responseText = "";
@@ -34,7 +32,9 @@ export const prepareAIForSending = (
   const conversationHistory = [
     {
       role: "system",
-      content: `${process.env.NEXT_PUBLIC_PROMPT}`,
+      content:
+        prompt +
+        `Refer your interloucutor as ${username}, if it is not a normal name, ignore it.`,
     },
     ...chatRecords,
     {

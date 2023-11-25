@@ -1,12 +1,12 @@
 "use client";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useId, useRef } from "react";
 import { useSnapshot } from "valtio";
 import { conversationAIState, globalState } from "@/States/states";
-import { getEmotion } from "@/Helpers/AI/dataExchange";
+import { getEmotion, readData, readDataChunk } from "@/Helpers/AI/dataExchange";
 import {
   RecordButton,
-  SendButton,
   StartNewConversationButton,
+  SendButton,
   TerminateButton,
 } from "./ActionButtons";
 import AutoHeightTextarea from "./AutoHeightTextArea";
@@ -14,143 +14,67 @@ import cn from "classnames";
 import s from "./style.module.css";
 import { prepareAIForSending, resetAIState } from "@/Helpers/AI/base";
 import { getMessagesByUserAndConversationId, supabase } from "@/Helpers/AI/db";
-import { useAIActionGuard } from "@/components/Hooks/ai";
-import { MessageType } from "@/components/Hooks/base";
-
-const readDataChunk = async (
-  reader: ReadableStreamReader<Uint8Array>,
-  messageObj: MessageType
-) => {
-  const decoder = new TextDecoder("utf-8");
-  let bufferObj: any;
-  let buffer = "";
-  let done = false;
-
-  while (!done) {
-    const { value, done: readerDone } = await reader.read();
-    done = readerDone;
-    const decodedValue = decoder.decode(value, { stream: !done });
-    buffer += decodedValue;
-    const lines = buffer.split("\n");
-    try {
-      for (const message of lines) {
-        if (!message || !message.startsWith("data:")) continue;
-        try {
-          bufferObj = JSON.parse(message.substring(6));
-          const result = bufferObj.choices[0].delta.content ?? "";
-          conversationAIState.responseText += result;
-          messageObj.gpt_id = bufferObj.id;
-          messageObj.text += result;
-          messageObj.conversation_id = bufferObj.conversation_id;
-          const finishReason = bufferObj.choices[0].finish_reason;
-          if (finishReason) {
-            return {
-              finishReason: finishReason,
-              messageObj: messageObj,
-            };
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      buffer = lines[lines.length - 1];
-    } catch (e) {
-      continue;
-    }
-  }
-};
-
-async function readData(
-  user: any,
-  abortController: any,
-  conversationHistory: any[]
-) {
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo-0613",
-      messages: conversationHistory,
-      stream: true,
-    }),
-  });
-
-  const messageObj: MessageType = {
-    user_id: user.id,
-    conversation_id: "",
-    gpt_id: "",
-    text: "",
-    role: "assistant",
-  };
-
-  conversationAIState.status = "responding";
-  conversationAIState.responseCompleted = false;
-  conversationAIState.pendingEmotion = true;
-
-  const { finishReason, messageObj: updatedMessageObj } = await readDataChunk(
-    response.body.getReader(),
-    messageObj
-  );
-
-  return {
-    finishReason,
-    messageObj: updatedMessageObj,
-  };
-
-  // abortController.current = completion.controller;
-  // for await (const chunk of completion) {
-  //   const result = chunk.choices[0].delta.content ?? "";
-  //   conversationAIState.responseText += result;
-  //   messageObj.gpt_id = chunk.id;
-  //   messageObj.timestamp = chunk.created;
-  //   messageObj.text += result;
-  //   const finishReason = chunk.choices[0].finish_reason;
-  //   if (finishReason) {
-  //     return {
-  //       finishReason: finishReason,
-  //       messageObj: messageObj,
-  //     };
-  //   }
-  //   // await new Promise(resolve => setTimeout(resolve, 50));
-  // }
-}
+import { useAIActionGuard } from "@/components/Hooks/conversation";
+import { MessageType, PreviousMessageType } from "@/Types/types";
 
 export const AIInput = () => {
   const { inputText, messageTerminated } = useSnapshot(conversationAIState);
-  const abortController = useRef(null);
+  const readerRef = useRef<ReadableStreamDefaultController<Uint8Array>>(null);
   const isUseInputMethod = useRef(false);
   const { canSend } = useAIActionGuard();
-  const { user, conversationId, isFirstMessage } = useSnapshot(globalState);
+  const { user, conversationId } = useSnapshot(globalState);
 
   const handleSend = async () => {
-    const messages = isFirstMessage
-      ? []
-      : (await getMessagesByUserAndConversationId(user.id!!, conversationId!!))
-          .messages!!.slice()
-          .reverse()
-          .map((message: MessageType) => {
-            return {
-              content: message.text,
-              role: message.role,
-            };
-          });
+    if (!user.id) {
+      return console.error(
+        "User context is lost. Please refresh the page. And report this bug to the developer."
+      );
+    }
+    conversationAIState.status = "responding";
+    conversationAIState.responseCompleted = false;
+    conversationAIState.pendingEmotion = true;
 
-    if (messages.length > 15) {
-      messages.splice(0, messages.length - 15);
+    let previousUserMessages: PreviousMessageType[] = [];
+
+    if (conversationId) {
+      const data = await getMessagesByUserAndConversationId(
+        user.id,
+        conversationId
+      );
+
+      if (data.error || !data.messages) {
+        console.error(data.error);
+        return;
+      }
+
+      previousUserMessages = data.messages
+        .reverse()
+        .map((message: MessageType) => {
+          return {
+            content: message.text,
+            role: message.role,
+          };
+        });
+
+      if (previousUserMessages.length > 7) {
+        previousUserMessages.splice(0, previousUserMessages.length - 7);
+      }
     }
 
     const conversationHistory = prepareAIForSending(
       messageTerminated,
       inputText,
-      messages
+      previousUserMessages,
+      user.username!!
     );
 
-    await readData(user, abortController, conversationHistory)
+    await readData(user.id, conversationHistory, readerRef)
       .then(data => {
-        let finishType = "";
+        if (!data) {
+          throw new Error("An error occurred when reading data.");
+        }
+        let finishType: "emotion" | "final" = "emotion";
+        console.log("finishReason: ", data?.finishReason);
         switch (data?.finishReason) {
           case "stop" || "length":
             conversationAIState.responseCompleted = true;
@@ -159,7 +83,8 @@ export const AIInput = () => {
             break;
           case "content_filter":
             conversationAIState.responseCompleted = true;
-            conversationAIState.responseText = "Don't say bad words!";
+            conversationAIState.responseText =
+              "Your message seems to contain some inappropriate content. Please try again.";
             conversationAIState.status = "angry";
             conversationAIState.pendingEmotion = false;
             finishType = "final";
@@ -176,13 +101,13 @@ export const AIInput = () => {
         }
         return {
           finishType,
-          messageObj: data?.messageObj,
+          messageObject: data.messageObject,
         };
       })
       .then(async data => {
         if (data.finishType === "emotion") {
-          if (data.messageObj) {
-            const insertingConversationID = isFirstMessage
+          if (data.messageObject) {
+            const insertingConversationID = !conversationId
               ? await supabase
                   .from("Conversation")
                   .insert([{ user_id: user.id!! }])
@@ -207,12 +132,12 @@ export const AIInput = () => {
                 {
                   gpt_id:
                     role === "assistant"
-                      ? data.messageObj?.gpt_id
-                      : "user_" + data.messageObj?.gpt_id,
+                      ? data.messageObject.gpt_id
+                      : "user_" + data.messageObject.gpt_id,
                   user_id: user.id,
                   text:
                     role === "assistant"
-                      ? data.messageObj?.text
+                      ? data.messageObject.text
                       : conversationAIState.userMessage,
                   role: role,
                   conversation_id: insertingConversationID,
@@ -220,7 +145,6 @@ export const AIInput = () => {
               ]);
             }
 
-            globalState.isFirstMessage = false;
             globalState.conversationId = insertingConversationID;
 
             await getEmotion();
@@ -228,6 +152,11 @@ export const AIInput = () => {
         }
       })
       .catch(e => {
+        conversationAIState.responseText = "";
+        conversationAIState.userMessage = "";
+        conversationAIState.status = "idle";
+        conversationAIState.responseCompleted = true;
+        conversationAIState.pendingEmotion = false;
         console.error(e);
       });
   };
@@ -255,8 +184,9 @@ export const AIInput = () => {
     }
   };
 
-  const handleTerminate = () => {
-    abortController.current?.abort();
+  const handleTerminate = async () => {
+    if (!readerRef.current) return;
+    await (readerRef.current as any).cancel();
     conversationAIState.messageTerminated = true;
     conversationAIState.responseText = "";
     conversationAIState.userMessage = "";
@@ -265,17 +195,10 @@ export const AIInput = () => {
     conversationAIState.pendingEmotion = false;
   };
 
-  const handleStartNewConversation = async () => {
-    // transcribe the above curl command to js
-    conversationAIState.refreshing = true;
-    resetAIState();
-    // create new conversation
-    conversationAIState.refreshing = false;
-  };
-
   return (
     <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/2 2xl:w-1/2 min-w-min flex gap-2 items-center justify-center max-w-2xl">
       <AutoHeightTextarea
+        placeholder="Talk to Bridget... "
         value={inputText}
         onChange={handleChange}
         onKeyUp={handleKeyUp}
@@ -284,15 +207,12 @@ export const AIInput = () => {
         autoFocus
         className={`${cn(
           s.textArea
-        )} resize-none block first-line:w-full px-3 py-2 border border-gray-300 bg-gray-300 rounded-2xl text-blue-600 font-bold focus:outline-none`}
+        )} resize-none block first-line:w-full px-3 py-2 bg-black/20 rounded-2xl text-white font-semibold focus:outline-none placeholder-shown:text-gray-400`}
       />
       <div className="flex flex-row flex-wrap min-w-max gap-2">
         <SendButton onSendCallback={handleSend} />
         <TerminateButton onTerminateCallback={handleTerminate} />
-        <RecordButton onSendCallback={handleSend} />
-        <StartNewConversationButton
-          onClickCallback={handleStartNewConversation}
-        />
+        {/* <RecordButton onSendCallback={handleSend} /> */}
       </div>
     </div>
   );

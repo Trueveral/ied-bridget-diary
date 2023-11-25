@@ -1,15 +1,21 @@
-import { renameConversation } from "@/Helpers/AI/db";
+import {
+  deleteConversation,
+  getConversationsByUser,
+  renameConversation,
+} from "@/Helpers/AI/db";
 import { conversationAIState, globalState } from "@/States/states";
+import { Icon } from "@iconify/react";
 import { useSpring, a } from "@react-spring/web";
 
 import { useState, useRef, useEffect } from "react";
 
 export const ConversationCard = ({ conversation }: { conversation: any }) => {
-  const { conversationId } = globalState;
+  const { conversationId, user } = globalState;
   const { status } = conversationAIState;
   const canSwitchConversation = status !== "responding";
   const isSelected = conversationId === conversation.id;
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleteClicked, setIsDeleteClicked] = useState(false);
   const [newTitle, setNewTitle] = useState(conversation.title);
   const conversationCardRef = useRef<HTMLButtonElement>(null);
 
@@ -51,21 +57,52 @@ export const ConversationCard = ({ conversation }: { conversation: any }) => {
     if (e.key === "Enter") {
       handleCompleteClick();
     }
+    if (e.key === "Escape") {
+      setNewTitle(conversation.title);
+      setIsEditing(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(e.target.value);
   };
 
-  const handleOutsideClick = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (!target.closest(".conversation-card-input")) {
-      setIsEditing(false);
+  const handleDeleteConfirm = async () => {
+    const { data, error } = await deleteConversation(conversation.id);
+    if (error) {
+      console.error(error);
+      return;
+    }
+    if (data) {
+      setIsDeleteClicked(false);
+    }
+
+    const { data: numConversations, error: numConversationsError } =
+      await getConversationsByUser(user.id!!);
+
+    if (numConversationsError) {
+      console.error(numConversationsError);
+      return;
+    }
+
+    if (numConversations) {
+      if (numConversations.length > 0) {
+        globalState.conversationId = numConversations[0].id;
+        conversationAIState.inputText = "";
+        conversationAIState.responseText = "";
+        conversationAIState.userMessage = "";
+        conversationAIState.responseCompleted = true;
+        conversationAIState.pendingEmotion = false;
+      } else {
+        globalState.conversationId = undefined;
+      }
     }
   };
 
   const cardStyleProps = useSpring({
-    backgroundColor: isSelected ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)",
+    backgroundColor: isSelected
+      ? "rgba(255, 255, 255, 0.1)"
+      : "rgba(0, 0, 0, 0.1)",
   });
 
   return (
@@ -83,7 +120,9 @@ export const ConversationCard = ({ conversation }: { conversation: any }) => {
           aria-label="conversation-card-input"
           className=" bg-transparent text-white/80 font-semibold focus:outline-none"
           value={newTitle}
-          placeholder={conversation.title ? conversation.title : "Untitled"}
+          placeholder={
+            conversation.title ? conversation.title : "New Conversation"
+          }
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
         />
@@ -91,26 +130,54 @@ export const ConversationCard = ({ conversation }: { conversation: any }) => {
         <div
           className={`${
             canSwitchConversation ? "cursor-pointer" : "cursor-not-allowed"
-          } text-sm text-white/80 font-semibold w-full text-start`}
+          } text-sm text-white/80 font-semibold w-full text-start whitespace-nowrap overflow-hidden overflow-ellipsis`}
           onClick={() => handleCardClick(conversation.id)}
         >
-          {conversation.title ? conversation.title : "Untitled"}
+          {conversation.title ? conversation.title : "New Conversation"}
         </div>
       )}
-      {isEditing ? (
+      {isDeleteClicked ? null : isEditing ? (
         <button
           className=" text-white/80 focus:outline-none bg-transparent hover:text-white transition ease-in-out duration-300"
           onClick={handleCompleteClick}
+          title="Done"
         >
-          Done
+          <Icon icon="ic:round-check" color="white" fill="white" />
         </button>
       ) : (
         <button
           className=" text-white/80 focus:outline-none bg-transparent hover:text-white transition ease-in-out duration-300"
           onClick={handleEditClick}
+          title="Rename"
         >
-          Rename
+          <Icon icon="mdi:rename-box" color="white" fill="white" />
         </button>
+      )}
+      {isEditing ? null : !isDeleteClicked ? (
+        <button
+          className=" text-white/80 focus:outline-none bg-transparent hover:text-white transition ease-in-out duration-300"
+          onClick={() => setIsDeleteClicked(true)}
+          title="Delete"
+        >
+          <Icon icon="mingcute:delete-2-fill" color="white" fill="white" />
+        </button>
+      ) : (
+        <div className="flex flex-row max-w-max gap-2">
+          <button
+            className=" text-white/80 focus:outline-none bg-transparent hover:text-white transition ease-in-out duration-300"
+            onClick={handleDeleteConfirm}
+            title="Confirm"
+          >
+            <Icon icon="ic:round-check" color="white" fill="white" />
+          </button>
+          <button
+            className=" text-white/80 focus:outline-none bg-transparent hover:text-white transition ease-in-out duration-300"
+            onClick={() => setIsDeleteClicked(false)}
+            title="Cancel"
+          >
+            <Icon icon="ic:round-close" color="white" fill="white" />
+          </button>
+        </div>
       )}
     </a.button>
   );

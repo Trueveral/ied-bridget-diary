@@ -1,6 +1,4 @@
 import { a, useSpring } from "@react-spring/web";
-import { useState } from "react";
-import s from "./style.module.css";
 
 export const WordMask = ({
   style,

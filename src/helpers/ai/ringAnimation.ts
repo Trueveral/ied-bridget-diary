@@ -1,23 +1,5 @@
 import { conversationAIState } from "@/States/states";
-import { useSpring, a, to } from "@react-spring/three";
-import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
-import { useSnapshot } from "valtio";
-import * as THREE from "three";
-import { springOptions, animationRotations } from "./ringOptions";
-import { easing } from "maath";
-
-interface ISpringOptions {
-  delay: number;
-  reset: boolean;
-  fromPosition: [number, number, number];
-  toPosition: [number, number, number] | [number, number, number][];
-  fromScale: number;
-  toScale: number | number[];
-  fromRotation: [number, number, number];
-  toRotation: [number, number, number];
-  springConfig: { mass: number; tension: number; friction: number } | undefined;
-}
+import { SpringOptionType } from "@/Types/types";
 
 // Helper functions to simplify the logic
 
@@ -41,7 +23,7 @@ export function calculatePosition(
 export function createToArray(
   index: number,
   ringState: typeof conversationAIState.status,
-  springOptions: ISpringOptions
+  springOptions: SpringOptionType | any
 ) {
   const { fromPosition, toPosition, fromScale, toScale } = springOptions;
   const isPositionArray = Array.isArray(toPosition[0]);

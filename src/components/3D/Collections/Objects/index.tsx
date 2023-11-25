@@ -4,8 +4,17 @@ import * as THREE from "three";
 import { a, useSpring } from "@react-spring/three";
 import { useSnapshot } from "valtio";
 import { collectionState, globalState } from "@/States/states";
-import { Float, OrbitControls } from "@react-three/drei";
 import { useRef } from "react";
+
+const scaleArray = [14, 14, 14, 6, 14, 14];
+const positionArray = [
+  [0.8, 0, -0.2],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0],
+];
 
 export const CollectionObject = ({ id }: { id: number }) => {
   const obj = useLoader(OBJLoader, `/objects/Dream${id}.obj`);
@@ -19,8 +28,11 @@ export const CollectionObject = ({ id }: { id: number }) => {
   const collectionObjectRef = useRef<THREE.Group>();
 
   const { scale, position } = useSpring({
-    position: activeId === id ? [0, 0, 0] : [0, 0, -2],
-    scale: activeId === id && link === "collections" ? [6, 6, 6] : [0, 0, 0],
+    position: activeId === id ? positionArray[id - 1] : [0, 0, -2],
+    scale:
+      activeId === id && link === "collections"
+        ? [scaleArray[id - 1], scaleArray[id - 1], scaleArray[id - 1]]
+        : [0, 0, 0],
     config: { mass: 1.3, tension: 100, friction: 17 },
   });
 

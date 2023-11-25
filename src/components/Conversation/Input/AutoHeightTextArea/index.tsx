@@ -1,7 +1,9 @@
 "use client";
-import { forwardRef, useEffect, useRef } from "react";
+
+// CREDIT: borrowed from https://github.com/langgenius/webapp-conversation
+
+import { forwardRef, useCallback, useEffect, useRef } from "react";
 import cn from "classnames";
-import { conversationAIState } from "@/States/states";
 
 type IProps = {
   placeholder?: string;
@@ -27,7 +29,6 @@ const AutoHeightTextarea = forwardRef(
       minHeight = 36,
       maxHeight = 96,
       autoFocus,
-      controlFocus,
       onKeyDown,
       onKeyUp,
     }: IProps,
@@ -35,32 +36,6 @@ const AutoHeightTextarea = forwardRef(
   ) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const ref = outerRef || useRef<HTMLTextAreaElement>(null);
-
-    const doFocus = () => {
-      if (ref.current) {
-        ref.current.setSelectionRange(value.length, value.length);
-        ref.current.focus();
-        return true;
-      }
-      return false;
-    };
-
-    const focus = () => {
-      if (!doFocus()) {
-        let hasFocus = false;
-        const runId = setInterval(() => {
-          hasFocus = doFocus();
-          if (hasFocus) clearInterval(runId);
-        }, 100);
-      }
-    };
-
-    useEffect(() => {
-      if (autoFocus) focus();
-    }, []);
-    useEffect(() => {
-      if (controlFocus) focus();
-    }, [controlFocus]);
 
     return (
       <div className="relative w-full">
@@ -75,7 +50,7 @@ const AutoHeightTextarea = forwardRef(
         </div>
         <textarea
           ref={ref}
-          autoFocus={false}
+          autoFocus={autoFocus}
           className={cn(
             className,
             "absolute inset-0 resize-none overflow-y-auto"
@@ -85,16 +60,6 @@ const AutoHeightTextarea = forwardRef(
           onKeyDown={onKeyDown}
           onKeyUp={onKeyUp}
           value={value}
-          // onFocus={() => {
-          //   if (aiState.status === "idle") {
-          //     aiState.status = "concentrating";
-          //   }
-          // }}
-          // onBlur={() => {
-          //   if (aiState.status === "concentrating") {
-          //     aiState.status = "idle";
-          //   }
-          // }}
         />
       </div>
     );

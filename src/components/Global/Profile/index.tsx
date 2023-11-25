@@ -1,6 +1,5 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { Icon } from "@iconify/react";
 import { a, useSpring } from "@react-spring/web";
 import { resetAIState } from "@/Helpers/AI/base";
 import {
@@ -8,20 +7,34 @@ import {
   getUsersListByName,
   supabase,
 } from "@/Helpers/AI/db";
-import { useSnapshot } from "valtio";
 import { globalState } from "@/States/states";
 import s from "./style.module.css";
 import cn from "classnames";
+import { ProfileBadge } from "./Badge";
 
 export const NewProfileButton = () => {
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
   const [canSend, setCanSend] = useState(false);
   const [userList, setUserList] = useState<any>([]);
-  const { user } = useSnapshot(globalState);
 
-  // const errorMessage =
-  //   "Please only countain lower/upper case letters, numbers, and underscores.";
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        globalState.user = JSON.parse(storedUser);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const errorMessage =
+    "Please only contain letters, numbers, spaces, and underscores in your name. Your name should be between 1 and 30 characters.";
 
   const formRef = useRef<HTMLDivElement | null>(null);
 
@@ -57,15 +70,16 @@ export const NewProfileButton = () => {
 
   useEffect(() => {
     async function fetchUsers() {
-      const { data: users, error } = await getUsersListByName(
-        name.replace(/(\s)*/g, ""),
-        true
-      );
-      if (error) {
-        console.error(error);
-        return;
+      const data = await getUsersListByName(name.replace(/(\s)*/g, ""), true);
+
+      if (data) {
+        const { data: users, error } = data;
+        if (error) {
+          console.error(error);
+          return;
+        }
+        setUserList(users);
       }
-      setUserList(users);
     }
     if (name) {
       fetchUsers();
@@ -79,8 +93,8 @@ export const NewProfileButton = () => {
   });
 
   const handleInputChange = (e: any) => {
+    setCanSend(/^[\u4e00-\u9fa5a-zA-Z0-9_\s]{1,30}$/.test(name));
     setName(e.target.value);
-    setCanSend(/^[\u4e00-\u9fa5a-zA-Z0-9_]{1,30}$/.test(name));
   };
 
   const handleInputKeyDown = (e: any) => {
@@ -89,7 +103,7 @@ export const NewProfileButton = () => {
     }
   };
 
-  const handleButtonClick = () => {
+  const handleProfileBadgeClick = () => {
     setShowForm(true);
   };
 
@@ -112,6 +126,9 @@ export const NewProfileButton = () => {
         return null;
       }
     });
+
+    // set user to local storage
+    localStorage.setItem("user", JSON.stringify(globalState.user));
 
     setShowForm(false);
     setName("");
@@ -141,19 +158,7 @@ export const NewProfileButton = () => {
   };
   return (
     <>
-      {!showForm && (
-        <div className="fixed top-10 right-16 flex-col justify-center items-center w-fit flex z-10">
-          <button
-            className={`transition ease-in-out duration-300 rounded-full p-2 w-10 h-10 flex items-center justify-center bg-black/30 backdrop-blur-2xl hover:bg-white/20 text-white"
-          }`}
-            title="Create new profile"
-            onClick={handleButtonClick}
-          >
-            <Icon icon="fluent:person-add-20-filled" color="white" />
-          </button>
-          <div className="text-white">{user.username}</div>
-        </div>
-      )}
+      <ProfileBadge handleClick={handleProfileBadgeClick} />
       {showForm && (
         <a.div
           ref={formRef}
@@ -211,7 +216,7 @@ export const NewProfileButton = () => {
               onClick={() => handleNewUserClick()}
               disabled={!canSend}
             >
-              Create new profile
+              {canSend ? "Create new profile" : errorMessage}
             </button>
           </div>
         </a.div>

@@ -3,18 +3,25 @@
 import { useState, useEffect, useRef } from "react";
 import { useSnapshot } from "valtio";
 import { a, useSpring } from "@react-spring/web";
-import { globalState } from "@/States/states";
-import { getConversationsByUser, supabase } from "@/Helpers/AI/db";
+import { conversationAIState, globalState } from "@/States/states";
+import {
+  createConversation,
+  getConversationsByUser,
+  supabase,
+} from "@/Helpers/AI/db";
 import { ConversationCard } from "./ConversationCard";
 import { type RealtimeChannel } from "@supabase/supabase-js";
 import s from "./style.module.css";
 import cn from "classnames";
+import { StartNewConversationButton } from "../Input/ActionButtons";
+import { resetAIState } from "@/Helpers/AI/base";
 
 export const ConversationList = () => {
   const { user, conversationId } = useSnapshot(globalState);
   const [conversations, setConversations] = useState<any>([]);
   const [hovered, setHovered] = useState(false);
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -22,7 +29,6 @@ export const ConversationList = () => {
       if (userId) {
         const { data: conversationIds } = await getConversationsByUser(userId);
         setConversations(conversationIds);
-        console.log(conversationIds);
       }
     };
 
@@ -44,20 +50,61 @@ export const ConversationList = () => {
   }, [user, conversationId]);
 
   const hoverProps = useSpring({
-    opacity: hovered ? 1 : 0,
+    opacity: hovered ? 1 : 0.8,
     config: { mass: 1, tension: 100, friction: 20 },
   });
 
+  const handleStartNewConversation = async () => {
+    // transcribe the above curl command to js
+    conversationAIState.refreshing = true;
+    conversationAIState.responseText = "";
+    conversationAIState.userMessage = "";
+    conversationAIState.status = "idle";
+    conversationAIState.inputText = "";
+    conversationAIState.pendingEmotion = false;
+    conversationAIState.refreshing = false;
+    conversationAIState.messageTerminated = false;
+    conversationAIState.responseCompleted = false;
+    globalState.isFirstMessage = true;
+    if (user.id) {
+      const { data, error } = await createConversation(user.id);
+      if (error) {
+        console.error(error);
+        return;
+      }
+      if (data) {
+        globalState.conversationId = data.id;
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = 0;
+        }
+      }
+    }
+
+    conversationAIState.refreshing = false;
+  };
+
   return (
-    <a.div
-      className={`pb-4 fixed my-auto top-1/2 -translate-y-1/2 left-4 w-80 max-h-96 h-fit bg-white/20 backdrop-blur-xl rounded-2xl shadow-md overflow-y-scroll`}
+    <div
+      className={`pb-4 fixed my-auto top-1/2 -translate-y-1/2 left-4 w-80 max-h-96 h-fit bg-white/5 backdrop-blur-xl rounded-2xl shadow-md overflow-y-scroll`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={hoverProps}
+      ref={scrollRef}
     >
-      <div className="flex flex-col gap-2 p-4 h-full">
-        <div className="text-xl font-semibold top-4 cursor-default sticky text-white">
-          Conversations
+      <a.div
+        className={`flex flex-col gap-2 p-4 h-full w-full`}
+        style={hoverProps}
+      >
+        <div
+          className={`${cn(
+            s.conversationTitleMask
+          )} flex flex-row justify-between items-center sticky p-1 top-1 h-max w-full z-10 `}
+        >
+          <div className="text-xl font-semibold cursor-default text-white">
+            Conversations
+          </div>
+          <StartNewConversationButton
+            onClickCallback={handleStartNewConversation}
+          />
         </div>
         <div
           className={`${cn(
@@ -70,7 +117,7 @@ export const ConversationList = () => {
             </div>
           ))}
         </div>
-      </div>
-    </a.div>
+      </a.div>
+    </div>
   );
 };

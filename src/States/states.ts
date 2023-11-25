@@ -1,4 +1,4 @@
-import { UserType } from "@/components/Hooks/base";
+import { UserType } from "@/Types/types";
 import { proxy } from "valtio";
 import { z } from "zod";
 
@@ -109,7 +109,7 @@ type CollectionStateType = {
 export const collectionState: CollectionStateType = proxy({
   activeId: 3,
   activeRef: null,
-  total: 7,
+  total: 6,
 });
 
 type GlobalStateType = {
@@ -120,8 +120,8 @@ type GlobalStateType = {
 };
 export const globalState: GlobalStateType = proxy({
   user: {
-    id: "fbf74ce6-0ee0-428d-9985-8db9a467c795",
-    username: "Johnny Strawberryseed",
+    id: "",
+    username: "",
   },
   link: "conversation",
   conversationId: undefined,

@@ -1,10 +1,10 @@
 import s from "../style.module.css";
 import cn from "classnames";
-import { MessageType } from "@/components/Hooks/base";
+import { MessageType } from "@/Types/types";
 
 export const UserMessageComponent = ({ message }: { message: MessageType }) => {
   return (
-    <div className="w-full text-xl font-black text-white flex flex-wrap cursor-default select-none justify-start overflow-x-hidden">
+    <div className="text-start w-full text-xl font-black text-white flex flex-wrap cursor-default select-none justify-start overflow-x-hidden">
       {message.text}
     </div>
   );

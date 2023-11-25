@@ -1,3 +1,4 @@
+import { ConversationType } from "@/Types/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = "https://jidrpskqigamtxhodmgb.supabase.co";
@@ -67,22 +68,24 @@ export async function getUsersListByName(
   name: string,
   conversationPreview: boolean
 ) {
-  const { data, error } = await supabase
+  const { data: users, error } = await supabase
     .from("User")
     .select("*")
     .ilike("username", `%${name}%`)
     .limit(10);
 
   if (conversationPreview) {
-    const users = data.map((user: any) => user.id);
+    if (!users) return { data: [], error };
+    const userIDList = users.map((user: any) => user.id);
     const messages = await supabase
       .from("Message")
       .select("*")
-      .in("user_id", users)
+      .in("user_id", userIDList)
       .order("id", { ascending: true })
       .limit(2);
 
-    const result = data.map((user: any) => {
+    if (!messages.data) return { data: [], error };
+    const result = users.map((user: any) => {
       const userMessages = messages.data.filter(
         (message: any) => message.user_id === user.id
       );
@@ -97,11 +100,6 @@ export async function getUsersListByName(
       error,
     };
   }
-
-  return {
-    data,
-    error,
-  };
 }
 
 export async function getSavedDiaries(limit?: number) {
@@ -124,9 +122,22 @@ export async function getConversationsByUser(userId: string) {
     .from("Conversation")
     .select("*")
     .eq("user_id", userId)
-    .order("id", { ascending: false });
+    .order("created_at", { ascending: false });
 
-  console.log(data, error);
+  return {
+    data,
+    error,
+  };
+}
+
+export async function createConversation(userId: string): Promise<{
+  data: any;
+  error: any;
+}> {
+  const { data, error } = await supabase
+    .from("Conversation")
+    .insert([{ user_id: userId }])
+    .select();
 
   return {
     data,
@@ -149,16 +160,14 @@ export async function renameConversation(
   };
 }
 
-export async function getMessageById(userId: string, gptId: string) {
-  const { data: message, error } = await supabase
-    .from("Message")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("gpt_id", gptId);
+export async function deleteConversation(conversationId: string) {
+  const { data, error } = await supabase
+    .from("Conversation")
+    .delete()
+    .eq("id", conversationId);
 
   return {
-    message,
-    users: [message[0].user_id],
+    data,
     error,
   };
 }

@@ -1,5 +1,5 @@
 "use client";
-import { MessageType, UserType } from "@/components/Hooks/base";
+import { MessageType } from "@/Types/types";
 import {
   AssistantMessageComponent,
   UserMessageComponent,
@@ -7,7 +7,6 @@ import {
 import s from "../style.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getMessagesByUserAndConversationId, supabase } from "@/Helpers/AI/db";
-import { getMessagesByUser } from "@/Helpers/AI/getMessagesByUser";
 import { useSnapshot } from "valtio";
 import {
   conversationAIState,
@@ -18,22 +17,19 @@ import { a, useSpring } from "@react-spring/web";
 import { type RealtimeChannel } from "@supabase/supabase-js";
 import { AudioButton, SaveButton } from "./ActionButtons";
 
-export const ChatList = ({
-  initialMessages,
-}: {
-  initialMessages?: MessageType[];
-}) => {
+export const ChatList = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const { showMask } = useSnapshot(conversationChatListState);
   const { responseCompleted } = useSnapshot(conversationAIState);
   const props = useSpring({
     // height: showMask ? 250 : 0,
-    opacity: showMask ? 1 : 0.5,
+    opacity: showMask ? 1 : 0.1,
+
     config: { duration: 300 },
   });
 
-  const { user, conversationId, isFirstMessage } = useSnapshot(globalState);
+  const { user, conversationId } = useSnapshot(globalState);
 
   const fetchMessages = useCallback(async () => {
     if (!user.id) return setMessages([]);
@@ -60,6 +56,8 @@ export const ChatList = ({
       )
       .subscribe();
 
+    channelRef.current = channel;
+
     return () => {
       supabase.removeChannel(channel);
     };
@@ -69,9 +67,11 @@ export const ChatList = ({
   // Because the action buttons are attached to the assistant messages
   // It ensures only when there are assistant messages, the action buttons will be shown
   // IE. It forces the messages to be saved in pairs
+
+  // Hear voice button is temporarily disabled.
   return (
     <div
-      className={`${s.chatListMask} flex flex-col overflow-y-auto h-full gap-2 pt-24 pb-96 z-20 max-w-3xl`}
+      className={`${s.chatListMask} flex flex-col overflow-y-scroll h-full gap-2 z-10 max-w-3xl`}
       onMouseEnter={() => {
         conversationChatListState.showMask = true;
       }}
@@ -83,7 +83,7 @@ export const ChatList = ({
         return (
           <a.div
             key={i}
-            className="flex flex-col w-full h-fit justify-start items-start"
+            className="flex flex-col w-full h-fit justify-start items-start overscroll-y-scroll"
             style={props}
           >
             {i % 2 === 0 ? (
@@ -93,7 +93,7 @@ export const ChatList = ({
                 <AssistantMessageComponent message={v} />
                 <div className="flex flex-row gap-4">
                   <SaveButton messageGPTID={v.gpt_id} />
-                  <AudioButton />
+                  {/* <AudioButton /> */}
                 </div>
               </div>
             )}

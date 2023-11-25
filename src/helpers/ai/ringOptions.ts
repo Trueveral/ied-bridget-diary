@@ -1,4 +1,6 @@
-export const springOptions = {
+import { SpringOptionsType } from "@/Types/types";
+
+export const springOptions: SpringOptionsType = {
   idle: {
     delay: 0,
     reset: false,
