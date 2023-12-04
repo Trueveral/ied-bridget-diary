@@ -1,3 +1,4 @@
+"use client";
 import { useSnapshot } from "valtio";
 import { CollectionObject } from "./Objects";
 import { collectionState } from "@/States/states";

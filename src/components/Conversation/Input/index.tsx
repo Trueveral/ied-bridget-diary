@@ -198,7 +198,7 @@ export const AIInput = () => {
   return (
     <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/2 2xl:w-1/2 min-w-min flex gap-2 items-center justify-center max-w-2xl">
       <AutoHeightTextarea
-        placeholder="Talk to Bridget... "
+        placeholder="Talk to me... "
         value={inputText}
         onChange={handleChange}
         onKeyUp={handleKeyUp}

@@ -24,7 +24,7 @@ export default function RootLayout({
         <>
           <Navigator />
           <NewProfileButton />
-          <DiaryBGMask />
+          {/* <DiaryBGMask /> */}
           {/* <BackgroundMask /> */}
           <div className="w-screen h-screen fixed -z-10">
             <Visual />

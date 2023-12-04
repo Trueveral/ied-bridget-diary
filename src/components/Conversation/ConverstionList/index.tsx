@@ -50,7 +50,7 @@ export const ConversationList = () => {
   }, [user, conversationId]);
 
   const hoverProps = useSpring({
-    opacity: hovered ? 1 : 0.8,
+    opacity: hovered ? 1 : 0,
     config: { mass: 1, tension: 100, friction: 20 },
   });
 
@@ -84,16 +84,14 @@ export const ConversationList = () => {
   };
 
   return (
-    <div
+    <a.div
       className={`pb-4 fixed my-auto top-1/2 -translate-y-1/2 left-4 w-80 max-h-96 h-fit bg-white/5 backdrop-blur-xl rounded-2xl shadow-md overflow-y-scroll`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       ref={scrollRef}
+      style={hoverProps}
     >
-      <a.div
-        className={`flex flex-col gap-2 p-4 h-full w-full`}
-        style={hoverProps}
-      >
+      <a.div className={`flex flex-col gap-2 p-4 h-full w-full`}>
         <div
           className={`${cn(
             s.conversationTitleMask
@@ -118,6 +116,6 @@ export const ConversationList = () => {
           ))}
         </div>
       </a.div>
-    </div>
+    </a.div>
   );
 };

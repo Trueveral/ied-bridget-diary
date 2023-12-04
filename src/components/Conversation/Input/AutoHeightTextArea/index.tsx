@@ -53,7 +53,7 @@ const AutoHeightTextarea = forwardRef(
           autoFocus={autoFocus}
           className={cn(
             className,
-            "absolute inset-0 resize-none overflow-y-auto"
+            "absolute inset-0 resize-none overflow-y-auto backdrop-blur-2xl"
           )}
           placeholder={placeholder}
           onChange={onChange}

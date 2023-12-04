@@ -4,12 +4,21 @@ import { useSnapshot } from "valtio";
 import {
   Bloom,
   BrightnessContrast,
+  ChromaticAberration,
   DepthOfField,
+  DotScreen,
   EffectComposer,
+  Glitch,
+  Pixelation,
   SMAA,
+  Scanline,
+  Sepia,
+  Vignette,
 } from "@react-three/postprocessing";
 import React from "react";
 import { interactionState, conversationAIState } from "@/States/states";
+import { BlendFunction, GlitchMode } from "postprocessing";
+import * as THREE from "three";
 
 const SERET_CODE = "KeasonAya";
 
@@ -28,21 +37,14 @@ export const PostPro = () => {
   });
 
   return (
-    <EffectComposer disableNormalPass>
+    <EffectComposer>
       <AnimatedBloom
         luminanceThreshold={0.3}
         mipmapBlur
         luminanceSmoothing={0.0}
-        intensity={1}
+        intensity={0.7}
       />
-      {/* <DepthOfField
-        target={[0, 0, 13]}
-        focalLength={0.3}
-        bokehScale={20}
-        height={0}
-      />
-      <SMAA /> */}
-      {/* <AnimatedBrightnessContrast brightness={brightness} contrast={0} /> */}
+      {/* <Glitch /> */}
     </EffectComposer>
   );
 };
